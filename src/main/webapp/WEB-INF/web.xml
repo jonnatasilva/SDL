@@ -7,7 +7,7 @@
   </context-param>
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>br.com.simova.config.ApplicationContext</param-value>
+    <param-value>br.com.trabalho.tg.config.ApplicationContext</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -21,7 +21,7 @@
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>br.com.simova.config.ServletConfig</param-value>
+      <param-value>br.com.trabalho.tg.config.ServletConfig</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

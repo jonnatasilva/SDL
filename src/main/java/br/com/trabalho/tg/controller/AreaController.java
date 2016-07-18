@@ -1,5 +1,7 @@
 package br.com.trabalho.tg.controller;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,6 +77,18 @@ public class AreaController extends ExceptionHandling {
 
 	private String getUrlView(MapeamentoEnum cView) {
 		return prefixoPadrao.concat(cView.getString());
+	}
+	
+	public static void main (String args[])  {
+		InetAddress ipAddress;
+		try {
+			ipAddress = InetAddress.getLocalHost();
+			System.out.println(ipAddress.getHostAddress());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

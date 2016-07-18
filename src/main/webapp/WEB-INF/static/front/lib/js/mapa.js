@@ -3,31 +3,42 @@ $(function() {
 	var draw; // global so we can remove it later
 	var source;
 	var selectSingleClick;
+	
+	
 });
 
-function addInteraction() {
-	var source;
-	var value = 'Polygon';
-	draw = new ol.interaction.Draw({
-		source : source,
-		type : /** @type {ol.geom.GeometryType} */
-		(value)
-	});
-	map.removeInteraction(selectSingleClick);
-	map.addInteraction(draw);
+/* Montar opção para realizar draw */
+var source;
+var value = 'Polygon';
+draw = new ol.interaction.Draw({
+	source : source,
+	type : /** @type {ol.geom.GeometryType} */
+	(value)
+});
+
+function addFeature(feature) {
+	source.addFeature(feature)
 }
 
-function removeInteraction() {
-	map.removeInteraction(draw);
-	map.addInteraction(selectSingleClick);
-}
+function createPolygon(coords) {
+	var thing = new ol.geom.Polygon( [
+	       coords
+	]);
+	
+//	thing.transform('EPSG:4326', 'EPSG:3857');
+	var feature = new ol.Feature(thing);
+	
+	return feature;
+} 
+
 
 function mapa(geojsonObject) {
 
 	var raster = new ol.layer.Tile({
-		source : new ol.source.MapQuest({
-			layer : 'sat'
-		}),
+// source : new ol.source.MapQuest({
+// layer : 'sat'
+// }),
+		source: new ol.source.OSM()
 	});
 
 	source = new ol.source.Vector({
@@ -118,12 +129,15 @@ function mapa(geojsonObject) {
 			console.log();
 			var content = '<div class="divPopup"><p>' + infoArea + '</p></div>';
 			popup.show(e.selected[0].getGeometry().getExtent(),content);
-			deleteFeature(infoArea);
 			
 		} else if (lenDese == 1) {
 			popup.hide();
 		}
 
+	});
+	
+	map.on('click', function(evt) {
+		console.log(evt.coordinate);
 	});
 	
 	$('.btnDelete').on('click', function(){
@@ -137,7 +151,21 @@ function mapa(geojsonObject) {
 		}
 	});
 	
-	function getInfoArea() {
-		
-	}
+	
+}
+
+function getDrawInteraction() {	
+	return draw;
+}
+
+function getSelectSingleClick() {
+	return selectSingleClick;
+}
+
+function addInteraction(interaction) {
+	map.addInteraction(interaction);
+}
+
+function removeInteraction(interaction) {
+	map.removeInteraction(interaction);
 }

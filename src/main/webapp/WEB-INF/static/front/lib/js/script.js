@@ -1,5 +1,5 @@
 $(function() {
-	/* Terminar passo inicias para prepar pagína */
+
 	function prepare() {
 		/* buscar areas já cadastro para o local */
 		getAreas();
@@ -7,8 +7,7 @@ $(function() {
 	}
 
 	/*
-	 * Função monta o objeto geo json para montar no mapa os areas já desenha
-	 * para o local
+	 * Função monta o objeto geo json para montar no mapa as areas para o local
 	 */
 	function carregaGeoJsonObject(coord) {
 		var features = [];
@@ -16,18 +15,20 @@ $(function() {
 			var aux = [];
 
 			var x = JSON.parse('[' + coord[i]['locale'] + ']');
-			features.push({
-				'type' : 'Feature',
-				'properties': {
-			        'name':  coord[i]['codigo'] + ' - ' +coord[i]['descricao'],
-			        'amenity': 'Baseball Stadium',
-			        'popupContent': 'This is where the Rockies play!'
-			    },
-				'geometry' : {
-					'type' : 'Polygon',
-					'coordinates' : [ x ]
-				}
-			});
+			features
+					.push({
+						'type' : 'Feature',
+						'properties' : {
+							'name' : coord[i]['codigo'] + ' - '
+									+ coord[i]['descricao'],
+							'amenity' : 'Baseball Stadium',
+							'popupContent' : 'This is where the Rockies play!'
+						},
+						'geometry' : {
+							'type' : 'Polygon',
+							'coordinates' : [ x ]
+						}
+					});
 
 		}
 		var geojsonObject = {
@@ -50,7 +51,7 @@ $(function() {
 			data : {
 				idLocal : dados
 			},
-			//async : !retorna,
+			// async : !retorna,
 			contentType : "application/json; charset=utf-8",
 			dataType : "json",
 
@@ -59,10 +60,10 @@ $(function() {
 					if (retorna) {
 						carregaGeoJsonObject(data);
 					}
-					setInterval(function(){
+					setInterval(function() {
 						$('#preparando').hide();
 					}, 5000);
-					
+
 				},
 				409 : function() {
 					alert("Erro")
@@ -122,8 +123,7 @@ function openForm(coords) {
 		$('.addForm').hide();
 		e.preventDefault();
 	});
-	
-	
+
 }
 
 function tranformToObj(c) {
@@ -174,11 +174,109 @@ function ajaxEnviarPost(url, dados, retorna) {
 
 	});
 }
-$(document).ready(function(){
-	$('.btnPintar').on('click', function(){
-		addInteraction();
+
+$(document).ready(function() {
+	// $('#sideBar')
+	// .mouseenter(function () {
+	// $("a > span", this).show();
+	// })
+	// .mouseleave(function () {
+	// $("a > span", this).hide();
+	// });
+
+	$('.btnPintar').on('click', function() {
+		addInteraction(getDrawInteraction());
+		removeInteraction(selectSingleClick);
+		setInterval(function() {
+			removeInteraction(getDrawInteraction());
+			addInteraction(getSelectSingleClick());
+		}, 300000);
 	});
-	$('.btnNPintar').on('click', function(){
-		removeInteraction();
+
+	$('#btnModal').on('show.bs.modal', function(event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		// var recipient = button.data('whatever') // Extract info from data-*
+		// attributes
+		// If necessary, you could initiate an AJAX request here (and then do
+		// the updating in a callback).
+		// Update the modal's content. We'll use jQuery here, but you could use
+		// a data binding library or other methods instead.
+		var modal = $(this)
+		// modal.find('.modal-title').text('New message to ' + recipient)
+		// modal.find('.modal-body input').val(recipient)
+		array = [];
+		$("#formModal").empty();
+		$("#formModal").html(addLinhaVertice(0, {}));
+		$('.arrayIncorreto').hide();
+		$('.erroCampos').hide();
+		$('.arrayInsert').html('');
+		$('.plusVt').on('click', function() {
+			addRow();
+		});
+		$("#savePaint").on('click', function() {
+			savePaint();
+		});
 	});
 });
+
+function addRow() {
+	$form = $('#formModal');
+	l = $form.find(':input#latitude').length;
+	value = {'latitude': $form.find(':input#latitude')[0].value, 'longitude': $form.find(':input#longitude')[0].value};
+	if (validateFormVertice($form)) {
+		$('#formModal').append(addLinhaVertice(l, value));
+	}
+
+}
+
+function addLinhaVertice(l, val) {
+	valLat = val.latitude != undefined ? val.latitude : 0;
+	valLon = val.longitude != undefined ? val.longitude : 0;
+	linha = '<div class="form-group">';
+	linha += '<label for="latitude" class="form-control-label">Latitude:</label>';
+	linha += ' <input type="number" name="latitude' + l
+			+ '" class="form-control" id="latitude" value="' + valLat
+			+ '" placeholder="Latitude">';
+	linha += '</div> ';
+	linha += '<div class="form-group">';
+	linha += '<label for="longitude" class="form-control-label">Longitude:</label>';
+	linha += ' <input type="number" name="longitude' + l
+			+ '" class="form-control" id="longitude"  value="' + valLon
+			+ '" placeholder="Longitude">';
+	linha += '</div><p />';
+
+	return linha;
+}
+
+function savePaint() {
+	array = [];
+	values = [];
+	$form = $('#formModal');
+	if (validateFormVertice($form)) {
+		$.each($form.serializeArray(), function(i, field) {
+			
+			if (field.name.indexOf("lat") === 0) {
+				values.push(Number(field.value));
+			} else {
+				values.push(Number(field.value));
+				array.push(values);
+				values = [];
+			}
+		});
+		console.log(array);
+		var polygon = createPolygon(array);
+		console.log(polygon);
+		addFeature(polygon);
+	}
+}
+
+function validateFormVertice(form) {
+	$.each($(form).serializeArray(), function(i, field) {
+		if (field.value === undefined || field.value === ''
+				|| field.value === '0') {
+			$('.erroCampos').show();
+			return false;
+		}
+	});
+	return true;
+}

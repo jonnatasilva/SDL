@@ -17,8 +17,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
-@ComponentScan("br.com.simova")
-@EnableJpaRepositories("br.com.simova")
+@ComponentScan("br.com.trabalho.tg")
+@EnableJpaRepositories("br.com.trabalho.tg")
 public class ApplicationContext {
 	
 	String jdbcUrl = "jdbc:h2:~/test";
@@ -41,7 +41,7 @@ public class ApplicationContext {
 			throws Exception {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource());
-		em.setPackagesToScan("br.com.simova");
+		em.setPackagesToScan("br.com.trabalho.tg");
 		
 	    /*JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 	    em.setJpaVendorAdapter(vendorAdapter);*/
