@@ -1,15 +1,20 @@
 package br.com.trabalho.tg.vo;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
+import org.json.JSONArray;
 
 
 @Entity
-@Table(name="area")
+@Table(name="area", uniqueConstraints={@UniqueConstraint(columnNames={"codigo"})})
 public class Area {
 	
 	
@@ -24,7 +29,7 @@ public class Area {
 	private String descricao;
 	
 	@Column(name="locale", nullable=false)
-	private String locale;
+	private byte[] locale;
 	
 	@Transient
 	private Object[] localeObj;
@@ -53,33 +58,16 @@ public class Area {
 		this.descricao = descricao;
 	}
 
-	public String getLocale() {
+	public byte[] getLocale() {
 		return locale;
 	}
 
-	public void setLocale(String locale) {
+	public void setLocale(byte[] locale) {
 		this.locale = locale;
 	}
 
-	public Object[] getLocaleObj() {
-		String obj[] = locale.split("],");
-		Double obj2[] = new Double[2];
-		
-		localeObj = new Object[obj.length];
-		for(int i = 0; i < obj.length; i++) {
-			String objAux = obj[i].replace("]", "");
-			objAux = objAux.replace("[", "");
-			
-			String array[] = objAux.split(",");
-			obj2[0] = Double.parseDouble(array[0]);
-			obj2[1] = Double.parseDouble(array[1]);
-			localeObj[i] = obj2; 
-			
-		}
-		return localeObj;
+	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
+		String str = new String(this.locale, "UTF-8");
+		return new JSONArray("[" + str + "]");
 	}
-	
-	
-
-	
-}
+}	

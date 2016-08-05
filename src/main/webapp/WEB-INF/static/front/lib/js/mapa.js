@@ -9,12 +9,6 @@ $(function() {
 
 /* Montar opção para realizar draw */
 var source;
-var value = 'Polygon';
-draw = new ol.interaction.Draw({
-	source : source,
-	type : /** @type {ol.geom.GeometryType} */
-	(value)
-});
 
 function addFeature(feature) {
 	source.addFeature(feature)
@@ -52,7 +46,6 @@ function mapa(geojsonObject) {
 	source.on('addfeature', function(evt) {
 		var feature = evt.feature;
 		var coords = feature.getGeometry().getCoordinates();
-		console.log(tranformToObj(coords));
 		openForm(tranformToObj(coords));
 	});
 
@@ -72,11 +65,11 @@ function mapa(geojsonObject) {
 		source : source,
 		style : new ol.style.Style({
 			fill : new ol.style.Fill({
-				color : 'rgba(255, 255, 255, 0.2)'
+				color : 'rgba(255, 255, 255, 0.6)'
 			}),
 			stroke : new ol.style.Stroke({
-				color : '#ffcc33',
-				width : 2
+				color : '#319FD3',
+				width : 1
 			}),
 			image : new ol.style.Circle({
 				radius : 7,
@@ -93,7 +86,7 @@ function mapa(geojsonObject) {
 				}),
 				stroke : new ol.style.Stroke({
 					color : '#fff',
-					width : 2
+					width : 1
 				})
 			})
 		})
@@ -109,14 +102,15 @@ function mapa(geojsonObject) {
 		})
 	});
 
+//	vector.setMap(map);
 	var popup = new ol.Overlay.Popup;
 	popup.setOffset([ 0, -55 ]);
 	map.addOverlay(popup);
 
-	/*
-	 * map.on('singleclick', function(evt) { var feature =
-	 * map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) { }) });
-	 */
+	
+	  map.on('singleclick', function(evt) { var feature =
+	  map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) { }) });
+	 
 
 	map.addInteraction(selectSingleClick);
 	selectSingleClick.on('select', function(e) {
@@ -136,25 +130,33 @@ function mapa(geojsonObject) {
 
 	});
 	
-	map.on('click', function(evt) {
-		console.log(evt.coordinate);
-	});
+//	map.on('click', function(evt) {
+//		console.log(evt.coordinate);
+//	});
 	
-	$('.btnDelete').on('click', function(){
-		var features = source.getFeatures();
-		for(f in features) {
-			if(features[f].get('name') === feature) {
-				source.removeFeature(features[f]);
-				popup.hide();
-	            break;
-			}
-		}
-	});
+//	$('.btnDelete').on('click', function(){
+//		var features = source.getFeatures();
+//		for(f in features) {
+//			if(features[f].get('name') === feature) {
+//				source.removeFeature(features[f]);
+//				popup.hide();
+//	            break;
+//			}
+//		}
+//	});
 	
 	
 }
 
-function getDrawInteraction() {	
+function getDrawInteraction() {
+	var value = 'Polygon';
+	var draw;
+	draw = new ol.interaction.Draw({
+		source : source,
+		type : /** @type {ol.geom.GeometryType} */
+		(value)
+	});
+	
 	return draw;
 }
 
@@ -163,6 +165,8 @@ function getSelectSingleClick() {
 }
 
 function addInteraction(interaction) {
+	
+
 	map.addInteraction(interaction);
 }
 

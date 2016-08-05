@@ -1,5 +1,4 @@
 $(function() {
-
 	function prepare() {
 		/* buscar areas já cadastro para o local */
 		getAreas();
@@ -9,20 +8,19 @@ $(function() {
 	/*
 	 * Função monta o objeto geo json para montar no mapa as areas para o local
 	 */
-	function carregaGeoJsonObject(coord) {
+	function carregaGeoJsonObject(data) {
 		var features = [];
-		for (var i = 0; i < coord.length; i++) {
+		for (var i = 0; i < data.length; i++) {
 			var aux = [];
 
-			var x = JSON.parse('[' + coord[i]['locale'] + ']');
+			var x = data[i].localeArray;
 			features
 					.push({
 						'type' : 'Feature',
 						'properties' : {
-							'name' : coord[i]['codigo'] + ' - '
-									+ coord[i]['descricao'],
-							'amenity' : 'Baseball Stadium',
-							'popupContent' : 'This is where the Rockies play!'
+							'name' : data[i]['codigo'] + ' - ' + data[i]['descricao'],
+//							'amenity' : 'Baseball Stadium',
+//							'popupContent' : 'This is where the Rockies play!'
 						},
 						'geometry' : {
 							'type' : 'Polygon',
@@ -44,12 +42,12 @@ $(function() {
 		mapa(geojsonObject);
 	}
 
-	function ajaxEnviarGet(url, dados, retorna) {
+	function getFeaturesByLocal(url, params, retorna) {
 		$.ajax({
 			type : "GET",
 			url : url,
 			data : {
-				idLocal : dados
+				idLocal : params
 			},
 			// async : !retorna,
 			contentType : "application/json; charset=utf-8",
@@ -75,9 +73,9 @@ $(function() {
 	}
 
 	function getAreas(idLocal) {
-		var url = '/backendTG/map/polygon/list';
+		var url = '/backendTG/map/polygon/listJSON';
 		var enviar = 1;
-		ajaxEnviarGet(url, enviar, true);
+		getFeaturesByLocal(url, enviar, true);
 	}
 
 	prepare();
@@ -88,41 +86,57 @@ $(function() {
  * submit do form
  */
 function openForm(coords) {
-	var codigo = getUrlParameter('codigoArea');
-	var descricao = getUrlParameter('descricaoArea');
-	var area = getUrlParameter('localeArea');
-
-	$('.addForm #formArea #codigo').val(codigo);
-	$('.addForm #formArea #descricao').val(descricao);
-	$('.addForm #formArea #cordenadas').val(coords);
-
-	$('.addForm').show();
-
-	$('#formArea').submit(function(e) {
-		var codigo = $('.addForm #codigo').val();
-		var descricao = $('.addForm #descricao').val();
-		var coord = $('.addForm #cordenadas').val();
-
-		var dados = {
-			"codigo" : codigo,
-			"descricao" : descricao,
-			"locale" : coord
-		};
-		var url = "/backendTG/map/polygon/save";
-
-		ajaxEnviarPost(url, dados);
-		/*
-		 * if() { $('#addForm').clear(); $('.addForm').show(); } else {
-		 * alert("Erro ao salvar"); }
-		 */
-
-		e.preventDefault();
+	$('#formSalvar').on('show.bs.modal', function(event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		// var recipient = button.data('whatever') // Extract info from data-*
+		// attributes
+		// If necessary, you could initiate an AJAX request here (and then do
+		// the updating in a callback).
+		// Update the modal's content. We'll use jQuery here, but you could use
+		// a data binding library or other methods instead.
+		var modal = $(this)
+		// modal.find('.modal-title').text('New message to ' + recipient)
+		// modal.find('.modal-body input').val(recipient)
+		$('.plusInfo').hide();
+		$('.erroCampos').hide();
+		$('.falhaSalvar').hide();
+		$('.arrayIncorreto').hide();
+		var codigo = getUrlParameter('codigoArea');
+		var descricao = getUrlParameter('descricaoArea');
+		
+		$('#formSalvar #formModalSalvar input[name="codigo"]').val(codigo);
+		$('#formSalvar #formModalSalvar input[name="descricao"]').val(descricao);
+		$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);
+		$("#save").on('click', function() {
+			values = {};
+			var $form = $('#formModalSalvar');
+			var erroEnc = false;
+			$.each($form.serializeArray(), function(i, field) {
+				if (field.name.indexOf("codigo") === 0) {
+					if(field.value === undefined || field.value === "") {
+						$('.erroCampos').show();
+						erroEnc = true;
+					}
+					values['codigo'] = field.value;
+				} else if (field.name.indexOf("descricao") === 0){
+					if(field.value === undefined || field.value === "") {
+						$('.erroCampos').show();
+						erroEnc = true;
+					}
+					values['descricao'] = field.value;
+				} else {
+					values['locale'] = field.value;
+				}
+			});
+			var url = "/backendTG/map/polygon/save";
+			
+			if(!erroEnc) {
+				ajaxEnviarPost(url, values, modal);
+			}
+			
+		});
 	});
-
-	$('.cancelar').on('click', function(e) {
-		$('.addForm').hide();
-		e.preventDefault();
-	});
+	$('#formSalvar').modal('show');
 
 }
 
@@ -152,7 +166,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 	}
 };
 
-function ajaxEnviarPost(url, dados, retorna) {
+function ajaxEnviarPost(url, dados, retorna, modal) {
 	$.ajax({
 		type : "POST",
 		url : url,
@@ -162,12 +176,14 @@ function ajaxEnviarPost(url, dados, retorna) {
 		statusCode : {
 			201 : function(data) {
 				if (retorna) {
-					console.log(data);
+					return data;
+				} else {
+					modal.modal('hide');
 				}
-				alert("Success");
 			},
 			409 : function() {
-				alert("Erro")
+				$('.plusInfo').show();
+				$('#formSalvar .falhaSalvar').show();
 			}
 
 		}
@@ -205,16 +221,30 @@ $(document).ready(function() {
 		// modal.find('.modal-title').text('New message to ' + recipient)
 		// modal.find('.modal-body input').val(recipient)
 		array = [];
+		$('.plusInfo').hide();
 		$("#formModal").empty();
 		$("#formModal").html(addLinhaVertice(0, {}));
 		$('.arrayIncorreto').hide();
 		$('.erroCampos').hide();
+		$('#btnModal .plusInfo .arrayIncorretoImpt').hide();
 		$('.arrayInsert').html('');
-		$('.plusVt').on('click', function() {
+		$('#btnAddVert').on('click', function() {
 			addRow();
 		});
 		$("#savePaint").on('click', function() {
-			savePaint();
+			if(savePaint()) {
+				modal.modal('hide');
+			} else {
+				$('.plusInfo').show();
+			}
+			
+		});
+
+		$(":file").jfilestyle({buttonText: "<span class='glyphicon glyphicon-folder-open'></span>"});
+		$("input:file").change(function (event){
+			f= event.target.files[0];
+			console.log(readFile(f));
+		    
 		});
 	});
 });
@@ -223,7 +253,7 @@ function addRow() {
 	$form = $('#formModal');
 	l = $form.find(':input#latitude').length;
 	value = {'latitude': $form.find(':input#latitude')[0].value, 'longitude': $form.find(':input#longitude')[0].value};
-	if (validateFormVertice($form)) {
+	if (!validateFormVertice($form)) {
 		$('#formModal').append(addLinhaVertice(l, value));
 	}
 
@@ -236,7 +266,7 @@ function addLinhaVertice(l, val) {
 	linha += '<label for="latitude" class="form-control-label">Latitude:</label>';
 	linha += ' <input type="number" name="latitude' + l
 			+ '" class="form-control" id="latitude" value="' + valLat
-			+ '" placeholder="Latitude">';
+			+ '" placeholder="Latitude" autofocus>';
 	linha += '</div> ';
 	linha += '<div class="form-group">';
 	linha += '<label for="longitude" class="form-control-label">Longitude:</label>';
@@ -252,7 +282,7 @@ function savePaint() {
 	array = [];
 	values = [];
 	$form = $('#formModal');
-	if (validateFormVertice($form)) {
+	if (!validateFormVertice($form)) {
 		$.each($form.serializeArray(), function(i, field) {
 			
 			if (field.name.indexOf("lat") === 0) {
@@ -263,20 +293,60 @@ function savePaint() {
 				values = [];
 			}
 		});
-		console.log(array);
 		var polygon = createPolygon(array);
-		console.log(polygon);
 		addFeature(polygon);
+		return true;
+		
+	} else {
+		return false;
 	}
+	
 }
 
 function validateFormVertice(form) {
+	var erroEcontrado = false;
 	$.each($(form).serializeArray(), function(i, field) {
 		if (field.value === undefined || field.value === ''
 				|| field.value === '0') {
 			$('.erroCampos').show();
+			erroEcontrado = true;
 			return false;
 		}
 	});
-	return true;
+	return erroEcontrado;
+}
+
+function readFile(f) {
+	var reader = new FileReader();
+	var array = [];
+    reader.onload = (function(theFile) {
+        return function(e) {
+        	var contents = e.target.result;
+        	
+        	if(contents.substring(0, 2) != '[[' && contents.substring(0, 1) === '[') {
+        		array = $.parseJSON('[' + contents + ']');
+        	} else if(contents.substring(0, 2) === '[[') {
+        		array = $.parseJSON(contents);
+        	} else {
+        		array = null;
+        	}
+        	
+        	exibeFile(array);
+        };
+    })(f);
+
+   reader.readAsText(f);
+   
+}
+function exibeFile(array) {
+	if (array === null) {
+		$('#btnModal .plusInfo').show();
+		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
+	} else if (array.length > 0) {
+		$("#formModal").empty();
+		for(var i = 0; i < array.length; i++) {
+			$("#formModal").append(addLinhaVertice(i, {'latitude': array[i][0], 'longitude': array[i][1]}));
+		}
+		
+	}
 }

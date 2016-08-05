@@ -88,3 +88,18 @@ body {
 #sideBar > ul > li > a > span {
     display:none;
 }
+.plusInfo {
+	margin: 4px!important;
+}
+	
+@font-face{ 
+	font-family : ' FontAwesome ' ; 
+	src : url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?v=4.2.0 ' ); 
+	src : url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0 ' ) format ( ' embedded-opentype ' ), url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.woff?v=4.2.0 ' ) format ( ' woff ' ),
+}
+.iconOpt {
+	margin-right: 10px !important;
+}
+.iconOpt, .iconOpt a {
+	color: #2F4F4F;
+}
