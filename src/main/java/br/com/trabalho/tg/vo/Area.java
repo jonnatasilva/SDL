@@ -12,7 +12,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.json.JSONArray;
 
-
 @Entity
 @Table(name="area", uniqueConstraints={@UniqueConstraint(columnNames={"codigo"})})
 public class Area {
@@ -33,6 +32,11 @@ public class Area {
 	
 	@Transient
 	private Object[] localeObj;
+
+	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
+		String str = new String(this.locale, "UTF-8");
+		return new JSONArray("[" + str + "]");
+	}
 
 	public Long getId() {
 		return id;
@@ -66,8 +70,13 @@ public class Area {
 		this.locale = locale;
 	}
 
-	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
-		String str = new String(this.locale, "UTF-8");
-		return new JSONArray("[" + str + "]");
+	public Object[] getLocaleObj() {
+		return localeObj;
 	}
+
+	public void setLocaleObj(Object[] localeObj) {
+		this.localeObj = localeObj;
+	}
+
+	
 }	

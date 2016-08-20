@@ -24,7 +24,11 @@ public class ApplicationContext {
 	String jdbcUrl = "jdbc:h2:~/test";
 	String user = "sa";
 	String password = "dba";
-
+	
+//	String jdbcUrl = "jdbc:oracle:thin:@localhost:1521:system";
+//	String user = "sa";
+//	String password = "dba";
+	
 	@Bean
 	public DataSource dataSource() throws Exception {
 		ComboPooledDataSource dataSource = new ComboPooledDataSource();
@@ -33,6 +37,7 @@ public class ApplicationContext {
 		dataSource.setPassword(password);
 
 		dataSource.setDriverClass("org.h2.Driver");
+//		dataSource.setDriverClass("org.postgresql.Driver");
 		return dataSource;
 	}
 
@@ -70,11 +75,11 @@ public class ApplicationContext {
 
 	private HibernateJpaVendorAdapter hibernateJpaVendorAdapter() {
 		HibernateJpaVendorAdapter va = new HibernateJpaVendorAdapter();
-		va.setShowSql(true);
-		va.setGenerateDdl(true);
+		va.setShowSql(false);
+		va.setGenerateDdl(false);
 		va.setDatabase(Database.H2);
+//		va.setDatabase(Database.ORACLE);
 		
 		return va;
 	}
-
 }

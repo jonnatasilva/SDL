@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,12 +29,16 @@ import br.com.trabalho.tg.vo.Area;
 @RequestMapping("/map/polygon")
 public class AreaController extends ExceptionHandling {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6778622757741017509L;
+
 	@Autowired
 	AreaService service;
 
 	private String prefixoPadrao = "redirect:/static";
-	private ModelAndView model;
-	
+
 	/*
 	 * Metódo request irá retornar a página default para a manipulação das
 	 */
@@ -47,9 +53,9 @@ public class AreaController extends ExceptionHandling {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<String> saveArea(@RequestBody String obj)
 			throws Exception {
-	
+
 		JSONObject json = new JSONObject(obj);
-		
+
 		Area area = new Area();
 		area.setCodigo(json.getString("codigo"));
 		area.setDescricao(json.getString("descricao"));
@@ -61,32 +67,38 @@ public class AreaController extends ExceptionHandling {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/list", params={"idLocal"}, method = RequestMethod.GET)
+	@RequestMapping(value = "/list", params = { "idLocal" }, method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
-	private ResponseEntity<Object> listAreas(@RequestParam("idLocal") Long idLocal) throws Exception {
+	private ResponseEntity<Object> listAreas(
+			@RequestParam("idLocal") Long idLocal) throws Exception {
 		List<Area> areas = new ArrayList<Area>();
 		areas = service.getAreasByLocal(idLocal);
 		areas.get(0).getLocaleArray();
 		return new ResponseEntity<Object>(areas, HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "/listJSON",  method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+
+	@RequestMapping(value = "/listJSON", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	private @ResponseBody List<Area> listAreas() throws Exception {
-		JSONObject resp = new JSONObject();
-		
 		List<Area> areas = new ArrayList<Area>();
 		areas = service.getAreasByLocal(0);
-		
-		return areas;
 
+		return areas;
+	}
+
+	@RequestMapping(value = "/parseKML", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	private @ResponseBody JSONObject parseKML(@ModelAttribute Object obj,
+			Model model) throws Exception {
+		System.out.println(obj);
+		return null;
 	}
 
 	private String getUrlView(MapeamentoEnum cView) {
 		return prefixoPadrao.concat(cView.getString());
 	}
-	
-	public static void main (String args[])  {
+
+	public static void main(String args[]) {
 		InetAddress ipAddress;
 		try {
 			ipAddress = InetAddress.getLocalHost();
@@ -95,7 +107,7 @@ public class AreaController extends ExceptionHandling {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

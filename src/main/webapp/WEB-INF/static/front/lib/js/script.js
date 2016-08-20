@@ -128,7 +128,7 @@ function openForm(coords) {
 					values['locale'] = field.value;
 				}
 			});
-			var url = "/backendTG/map/polygon/save";
+			var url = "/backendTG/map/polygon/salvar";
 			
 			if(!erroEnc) {
 				ajaxEnviarPost(url, values, modal);
@@ -234,8 +234,6 @@ $(document).ready(function() {
 		$("#savePaint").on('click', function() {
 			if(savePaint()) {
 				modal.modal('hide');
-			} else {
-				$('.plusInfo').show();
 			}
 			
 		});
@@ -253,10 +251,25 @@ function addRow() {
 	$form = $('#formModal');
 	l = $form.find(':input#latitude').length;
 	value = {'latitude': $form.find(':input#latitude')[0].value, 'longitude': $form.find(':input#longitude')[0].value};
-	if (!validateFormVertice($form)) {
+	if (!validateBrancoOuZero($form)) {
 		$('#formModal').append(addLinhaVertice(l, value));
+		mensagemValidateForm('.erroCampos', true);
+	} else {
+		mensagemValidateForm('.erroCampos', false);
 	}
 
+}
+
+function mensagemValidateForm(obj, valido) {
+	if(!valido) {
+		$('.plusInfo').show();
+		$(obj).show();
+	} 
+	else {
+		$('.plusInfo').hide();
+		$(obj).hide();
+	}
+	
 }
 
 function addLinhaVertice(l, val) {
@@ -282,7 +295,8 @@ function savePaint() {
 	array = [];
 	values = [];
 	$form = $('#formModal');
-	if (!validateFormVertice($form)) {
+	if (!validateBrancoOuZero($form)) {
+		mensagemValidateForm('.erroCampos', true);
 		$.each($form.serializeArray(), function(i, field) {
 			
 			if (field.name.indexOf("lat") === 0) {
@@ -298,19 +312,20 @@ function savePaint() {
 		return true;
 		
 	} else {
+		mensagemValidateForm('.erroCampos', false);
 		return false;
 	}
 	
 }
 
-function validateFormVertice(form) {
+function validateBrancoOuZero(form) {
 	var erroEcontrado = false;
 	$.each($(form).serializeArray(), function(i, field) {
 		if (field.value === undefined || field.value === ''
 				|| field.value === '0') {
-			$('.erroCampos').show();
 			erroEcontrado = true;
 			return false;
+
 		}
 	});
 	return erroEcontrado;

@@ -37,7 +37,9 @@ public class KmlUtils {
 					} else if (documentFeature instanceof Folder) {
 						Folder folder = (Folder) documentFeature;
 						for (Feature folderFeature : folder.getFeature()) {
-							aux.put(parseFeature(folderFeature));
+							JSONArray arrayAux = parseFeature(folderFeature);
+							if(arrayAux.length() > 0)
+								aux.put(arrayAux);
 						}
 						// if (f instanceof Document) {
 						// Document d = (Document) f;
@@ -87,7 +89,7 @@ public class KmlUtils {
 	}
 
 	public static void main(String args[]) {
-		final Kml kml = Kml.unmarshal(new File("C:/Users/Jonnatas/doc.kml"));
+		final Kml kml = Kml.unmarshal(new File("C:/Users/Jonnatas/teste.kml"));
 		Feature feature = kml.getFeature();
 		JSONArray array = parseFeature(feature);
 		for (Object obj : array) {
