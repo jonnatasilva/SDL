@@ -23,6 +23,7 @@ $RECYCLE.BIN/
 *.class
 *.project
 *.settings
+*.classpath
 # OSX
 # =========================
 
