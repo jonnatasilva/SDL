@@ -1,6 +1,5 @@
 package br.com.trabalho.tg.utils;
 
-import java.io.File;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -87,15 +86,20 @@ public class KmlUtils {
 		}
 		return coordinates;
 	}
-
-	public static void main(String args[]) {
-		final Kml kml = Kml.unmarshal(new File("C:/Users/Jonnatas/teste.kml"));
-		Feature feature = kml.getFeature();
-		JSONArray array = parseFeature(feature);
-		for (Object obj : array) {
-			System.out.println(obj.toString());
-		}
-
+	
+	public static JSONArray parseToKMLERetorna(String objKML) throws Exception{
+		return parseFeature(Kml.unmarshal(objKML).getFeature());
 	}
+	
+//	public static void main(String args[]) {
+//		final Kml kml = Kml.unmarshal(new File("C:/Users/Jonnatas/teste.kml"));
+//		Feature feature = kml.getFeature();
+//		JSONArray array = parseFeature(feature);
+//		for (Object obj : array) {
+//			System.out.println(obj.toString());
+//		}
+//		Kml.
+//
+//	}
 
 }

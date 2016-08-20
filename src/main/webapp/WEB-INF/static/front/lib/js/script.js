@@ -241,8 +241,11 @@ $(document).ready(function() {
 		$(":file").jfilestyle({buttonText: "<span class='glyphicon glyphicon-folder-open'></span>"});
 		$("input:file").change(function (event){
 			f= event.target.files[0];
-			console.log(readFile(f));
-		    
+			if(f.type === 'text/plain') {
+				readFile(f, false);
+			} else if(f.type.indexOf('kml') != -1) {
+				var dados = readFile(f, true);
+			}
 		});
 	});
 });
@@ -331,22 +334,28 @@ function validateBrancoOuZero(form) {
 	return erroEcontrado;
 }
 
-function readFile(f) {
+function readFile(f, isKml) {
 	var reader = new FileReader();
 	var array = [];
     reader.onload = (function(theFile) {
         return function(e) {
+        	
         	var contents = e.target.result;
-        	
-        	if(contents.substring(0, 2) != '[[' && contents.substring(0, 1) === '[') {
-        		array = $.parseJSON('[' + contents + ']');
-        	} else if(contents.substring(0, 2) === '[[') {
-        		array = $.parseJSON(contents);
+        	if(!isKml) {
+        		if(contents.substring(0, 2) != '[[' && contents.substring(0, 1) === '[') {
+        			array = $.parseJSON('[' + contents + ']');
+        		} else if(contents.substring(0, 2) === '[[') {
+        			array = $.parseJSON(contents);
+        		} else {
+        			array = null;
+        		}
+        		
+        		exibeFile(array);
         	} else {
-        		array = null;
+        		var url = '/backendTG/map/polygon/parseKML';
+        		console.log(ajaxEnviarPost(url, contents, true, undefined));
+        		return contents;
         	}
-        	
-        	exibeFile(array);
         };
     })(f);
 

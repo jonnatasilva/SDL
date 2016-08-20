@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import br.com.trabalho.tg.enums.MapeamentoEnum;
 import br.com.trabalho.tg.handling.ExceptionHandling;
 import br.com.trabalho.tg.service.AreaService;
+import br.com.trabalho.tg.utils.KmlUtils;
 import br.com.trabalho.tg.vo.Area;
 
 @Controller
@@ -88,9 +87,8 @@ public class AreaController extends ExceptionHandling {
 
 	@RequestMapping(value = "/parseKML", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	private @ResponseBody JSONObject parseKML(@ModelAttribute Object obj,
-			Model model) throws Exception {
-		System.out.println(obj);
+	private JSONObject parseKML(@RequestBody String obj) throws Exception {
+		System.out.println(KmlUtils.parseToKMLERetorna(obj));
 		return null;
 	}
 
