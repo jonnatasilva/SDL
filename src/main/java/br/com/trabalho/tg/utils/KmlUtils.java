@@ -11,7 +11,6 @@ import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
 import de.micromata.opengis.kml.v_2_2_0.Geometry;
-import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
@@ -87,8 +86,8 @@ public class KmlUtils {
 		return coordinates;
 	}
 	
-	public static JSONArray parseToKMLERetorna(String objKML) throws Exception{
-		return parseFeature(Kml.unmarshal(objKML).getFeature());
+	public static JSONArray parse(Feature feature) throws Exception{
+		return parseFeature(feature);
 	}
 	
 //	public static void main(String args[]) {

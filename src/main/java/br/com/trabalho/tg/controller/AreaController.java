@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.trabalho.tg.enums.MapeamentoEnum;
@@ -23,6 +25,7 @@ import br.com.trabalho.tg.handling.ExceptionHandling;
 import br.com.trabalho.tg.service.AreaService;
 import br.com.trabalho.tg.utils.KmlUtils;
 import br.com.trabalho.tg.vo.Area;
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 @Controller
 @RequestMapping("/map/polygon")
@@ -87,9 +90,14 @@ public class AreaController extends ExceptionHandling {
 
 	@RequestMapping(value = "/parseKML", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	private JSONObject parseKML(@RequestBody String obj) throws Exception {
-		System.out.println(KmlUtils.parseToKMLERetorna(obj));
-		return null;
+	private @ResponseBody String parseKML(@RequestParam("kml") MultipartFile file) throws Exception {
+		JSONObject obj = null;
+		if (!file.isEmpty()) {
+			Kml kml = Kml.unmarshal(file.getInputStream());
+			JSONArray array = KmlUtils.parse(kml.getFeature());
+			obj = (JSONObject) array.get(0);
+		}
+		return obj.toString();
 	}
 
 	private String getUrlView(MapeamentoEnum cView) {

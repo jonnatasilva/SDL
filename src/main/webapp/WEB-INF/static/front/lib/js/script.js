@@ -14,19 +14,18 @@ $(function() {
 			var aux = [];
 
 			var x = data[i].localeArray;
-			features
-					.push({
-						'type' : 'Feature',
-						'properties' : {
-							'name' : data[i]['codigo'] + ' - ' + data[i]['descricao'],
-//							'amenity' : 'Baseball Stadium',
-//							'popupContent' : 'This is where the Rockies play!'
-						},
-						'geometry' : {
-							'type' : 'Polygon',
-							'coordinates' : [ x ]
-						}
-					});
+			features.push({
+				'type' : 'Feature',
+				'properties' : {
+					'name' : data[i]['codigo'] + ' - ' + data[i]['descricao'],
+				// 'amenity' : 'Baseball Stadium',
+				// 'popupContent' : 'This is where the Rockies play!'
+				},
+				'geometry' : {
+					'type' : 'Polygon',
+					'coordinates' : [ x ]
+				}
+			});
 
 		}
 		var geojsonObject = {
@@ -86,56 +85,86 @@ $(function() {
  * submit do form
  */
 function openForm(coords) {
-	$('#formSalvar').on('show.bs.modal', function(event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		// var recipient = button.data('whatever') // Extract info from data-*
-		// attributes
-		// If necessary, you could initiate an AJAX request here (and then do
-		// the updating in a callback).
-		// Update the modal's content. We'll use jQuery here, but you could use
-		// a data binding library or other methods instead.
-		var modal = $(this)
-		// modal.find('.modal-title').text('New message to ' + recipient)
-		// modal.find('.modal-body input').val(recipient)
-		$('.plusInfo').hide();
-		$('.erroCampos').hide();
-		$('.falhaSalvar').hide();
-		$('.arrayIncorreto').hide();
-		var codigo = getUrlParameter('codigoArea');
-		var descricao = getUrlParameter('descricaoArea');
-		
-		$('#formSalvar #formModalSalvar input[name="codigo"]').val(codigo);
-		$('#formSalvar #formModalSalvar input[name="descricao"]').val(descricao);
-		$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);
-		$("#save").on('click', function() {
-			values = {};
-			var $form = $('#formModalSalvar');
-			var erroEnc = false;
-			$.each($form.serializeArray(), function(i, field) {
-				if (field.name.indexOf("codigo") === 0) {
-					if(field.value === undefined || field.value === "") {
-						$('.erroCampos').show();
-						erroEnc = true;
-					}
-					values['codigo'] = field.value;
-				} else if (field.name.indexOf("descricao") === 0){
-					if(field.value === undefined || field.value === "") {
-						$('.erroCampos').show();
-						erroEnc = true;
-					}
-					values['descricao'] = field.value;
-				} else {
-					values['locale'] = field.value;
-				}
-			});
-			var url = "/backendTG/map/polygon/salvar";
-			
-			if(!erroEnc) {
-				ajaxEnviarPost(url, values, modal);
-			}
-			
-		});
-	});
+	$('#formSalvar')
+			.on(
+					'show.bs.modal',
+					function(event) {
+						var button = $(event.relatedTarget) // Button that
+															// triggered the
+															// modal
+						// var recipient = button.data('whatever') // Extract
+						// info from data-*
+						// attributes
+						// If necessary, you could initiate an AJAX request here
+						// (and then do
+						// the updating in a callback).
+						// Update the modal's content. We'll use jQuery here,
+						// but you could use
+						// a data binding library or other methods instead.
+						var modal = $(this)
+						// modal.find('.modal-title').text('New message to ' +
+						// recipient)
+						// modal.find('.modal-body input').val(recipient)
+						$('.plusInfo').hide();
+						$('.erroCampos').hide();
+						$('.falhaSalvar').hide();
+						$('.arrayIncorreto').hide();
+						var codigo = getUrlParameter('codigoArea');
+						var descricao = getUrlParameter('descricaoArea');
+
+						$('#formSalvar #formModalSalvar input[name="codigo"]')
+								.val(codigo);
+						$(
+								'#formSalvar #formModalSalvar input[name="descricao"]')
+								.val(descricao);
+						$(
+								'#formSalvar #formModalSalvar input[name="coordenadas"]')
+								.val(coords);
+						$("#save")
+								.on(
+										'click',
+										function() {
+											values = {};
+											var $form = $('#formModalSalvar');
+											var erroEnc = false;
+											$
+													.each(
+															$form
+																	.serializeArray(),
+															function(i, field) {
+																if (field.name
+																		.indexOf("codigo") === 0) {
+																	if (field.value === undefined
+																			|| field.value === "") {
+																		$(
+																				'.erroCampos')
+																				.show();
+																		erroEnc = true;
+																	}
+																	values['codigo'] = field.value;
+																} else if (field.name
+																		.indexOf("descricao") === 0) {
+																	if (field.value === undefined
+																			|| field.value === "") {
+																		$(
+																				'.erroCampos')
+																				.show();
+																		erroEnc = true;
+																	}
+																	values['descricao'] = field.value;
+																} else {
+																	values['locale'] = field.value;
+																}
+															});
+											var url = "/backendTG/map/polygon/salvar";
+
+											if (!erroEnc) {
+												ajaxEnviarPost(url, values,
+														modal);
+											}
+
+										});
+					});
 	$('#formSalvar').modal('show');
 
 }
@@ -191,69 +220,101 @@ function ajaxEnviarPost(url, dados, retorna, modal) {
 	});
 }
 
-$(document).ready(function() {
-	// $('#sideBar')
-	// .mouseenter(function () {
-	// $("a > span", this).show();
-	// })
-	// .mouseleave(function () {
-	// $("a > span", this).hide();
-	// });
+$(document)
+		.ready(
+				function() {
+					// $('#sideBar')
+					// .mouseenter(function () {
+					// $("a > span", this).show();
+					// })
+					// .mouseleave(function () {
+					// $("a > span", this).hide();
+					// });
 
-	$('.btnPintar').on('click', function() {
-		addInteraction(getDrawInteraction());
-		removeInteraction(selectSingleClick);
-		setInterval(function() {
-			removeInteraction(getDrawInteraction());
-			addInteraction(getSelectSingleClick());
-		}, 300000);
-	});
+					$('.btnPintar').on('click', function() {
+						addInteraction(getDrawInteraction());
+						removeInteraction(selectSingleClick);
+						setInterval(function() {
+							removeInteraction(getDrawInteraction());
+							addInteraction(getSelectSingleClick());
+						}, 300000);
+					});
 
-	$('#btnModal').on('show.bs.modal', function(event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		// var recipient = button.data('whatever') // Extract info from data-*
-		// attributes
-		// If necessary, you could initiate an AJAX request here (and then do
-		// the updating in a callback).
-		// Update the modal's content. We'll use jQuery here, but you could use
-		// a data binding library or other methods instead.
-		var modal = $(this)
-		// modal.find('.modal-title').text('New message to ' + recipient)
-		// modal.find('.modal-body input').val(recipient)
-		array = [];
-		$('.plusInfo').hide();
-		$("#formModal").empty();
-		$("#formModal").html(addLinhaVertice(0, {}));
-		$('.arrayIncorreto').hide();
-		$('.erroCampos').hide();
-		$('#btnModal .plusInfo .arrayIncorretoImpt').hide();
-		$('.arrayInsert').html('');
-		$('#btnAddVert').on('click', function() {
-			addRow();
-		});
-		$("#savePaint").on('click', function() {
-			if(savePaint()) {
-				modal.modal('hide');
-			}
-			
-		});
+					$('#btnModal')
+							.on(
+									'show.bs.modal',
+									function(event) {
+										var button = $(event.relatedTarget) // Button
+																			// that
+																			// triggered
+																			// the
+																			// modal
+										// var recipient =
+										// button.data('whatever') // Extract
+										// info from data-*
+										// attributes
+										// If necessary, you could initiate an
+										// AJAX request here (and then do
+										// the updating in a callback).
+										// Update the modal's content. We'll use
+										// jQuery here, but you could use
+										// a data binding library or other
+										// methods instead.
+										var modal = $(this)
+										// modal.find('.modal-title').text('New
+										// message to ' + recipient)
+										// modal.find('.modal-body
+										// input').val(recipient)
+										array = [];
+										$('.plusInfo').hide();
+										$("#formModal").empty();
+										$("#formModal").html(
+												addLinhaVertice(0, {}));
+										$('.arrayIncorreto').hide();
+										$('.erroCampos').hide();
+										$(
+												'#btnModal .plusInfo .arrayIncorretoImpt')
+												.hide();
+										$('.arrayInsert').html('');
+										$('#btnAddVert').on('click',
+												function() {
+													addRow();
+												});
+										$("#savePaint").on('click', function() {
+											if (savePaint()) {
+												modal.modal('hide');
+											}
 
-		$(":file").jfilestyle({buttonText: "<span class='glyphicon glyphicon-folder-open'></span>"});
-		$("input:file").change(function (event){
-			f= event.target.files[0];
-			if(f.type === 'text/plain') {
-				readFile(f, false);
-			} else if(f.type.indexOf('kml') != -1) {
-				var dados = readFile(f, true);
-			}
-		});
-	});
-});
+										});
+
+										$(":file")
+												.jfilestyle(
+														{
+															buttonText : "<span class='glyphicon glyphicon-folder-open'></span>"
+														});
+										$("input:file")
+												.change(
+														function(event) {
+															f = event.target.files[0];
+															if (f.type === 'text/plain') {
+																readFile(f,
+																		false);
+															} else if (f.type
+																	.indexOf('kml') != -1) {
+																var dados = readFile(
+																		f, true);
+															}
+														});
+									});
+				});
 
 function addRow() {
 	$form = $('#formModal');
 	l = $form.find(':input#latitude').length;
-	value = {'latitude': $form.find(':input#latitude')[0].value, 'longitude': $form.find(':input#longitude')[0].value};
+	value = {
+		'latitude' : $form.find(':input#latitude')[0].value,
+		'longitude' : $form.find(':input#longitude')[0].value
+	};
 	if (!validateBrancoOuZero($form)) {
 		$('#formModal').append(addLinhaVertice(l, value));
 		mensagemValidateForm('.erroCampos', true);
@@ -264,15 +325,14 @@ function addRow() {
 }
 
 function mensagemValidateForm(obj, valido) {
-	if(!valido) {
+	if (!valido) {
 		$('.plusInfo').show();
 		$(obj).show();
-	} 
-	else {
+	} else {
 		$('.plusInfo').hide();
 		$(obj).hide();
 	}
-	
+
 }
 
 function addLinhaVertice(l, val) {
@@ -301,7 +361,7 @@ function savePaint() {
 	if (!validateBrancoOuZero($form)) {
 		mensagemValidateForm('.erroCampos', true);
 		$.each($form.serializeArray(), function(i, field) {
-			
+
 			if (field.name.indexOf("lat") === 0) {
 				values.push(Number(field.value));
 			} else {
@@ -313,12 +373,12 @@ function savePaint() {
 		var polygon = createPolygon(array);
 		addFeature(polygon);
 		return true;
-		
+
 	} else {
 		mensagemValidateForm('.erroCampos', false);
 		return false;
 	}
-	
+
 }
 
 function validateBrancoOuZero(form) {
@@ -337,30 +397,44 @@ function validateBrancoOuZero(form) {
 function readFile(f, isKml) {
 	var reader = new FileReader();
 	var array = [];
-    reader.onload = (function(theFile) {
-        return function(e) {
-        	
-        	var contents = e.target.result;
-        	if(!isKml) {
-        		if(contents.substring(0, 2) != '[[' && contents.substring(0, 1) === '[') {
-        			array = $.parseJSON('[' + contents + ']');
-        		} else if(contents.substring(0, 2) === '[[') {
-        			array = $.parseJSON(contents);
-        		} else {
-        			array = null;
-        		}
-        		
-        		exibeFile(array);
-        	} else {
-        		var url = '/backendTG/map/polygon/parseKML';
-        		console.log(ajaxEnviarPost(url, contents, true, undefined));
-        		return contents;
-        	}
-        };
-    })(f);
+	reader.onload = (function(theFile) {
+		return function(e) {
 
-   reader.readAsText(f);
-   
+			var contents = e.target.result;
+			if (!isKml) {
+				if (contents.substring(0, 2) != '[['
+						&& contents.substring(0, 1) === '[') {
+					array = $.parseJSON('[' + contents + ']');
+				} else if (contents.substring(0, 2) === '[[') {
+					array = $.parseJSON(contents);
+				} else {
+					array = null;
+				}
+
+				exibeFile(array);
+			} else {
+				var url = '/backendTG/map/polygon/parseKML';
+				var formData = new FormData();
+				formData.append('kml', f, f.name);
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', url, true);
+
+				xhr.onload = function() {
+					if (xhr.status === 200) {
+						console.log(xhr);
+					} else {
+						alert('An error occurred!');
+					}
+				};
+				xhr.send(formData);
+				//console.log(ajaxEnviarPost(url, contents, true, undefined));
+				return contents;
+			}
+		};
+	})(f);
+
+	reader.readAsText(f);
+
 }
 function exibeFile(array) {
 	if (array === null) {
@@ -368,9 +442,12 @@ function exibeFile(array) {
 		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
 	} else if (array.length > 0) {
 		$("#formModal").empty();
-		for(var i = 0; i < array.length; i++) {
-			$("#formModal").append(addLinhaVertice(i, {'latitude': array[i][0], 'longitude': array[i][1]}));
+		for (var i = 0; i < array.length; i++) {
+			$("#formModal").append(addLinhaVertice(i, {
+				'latitude' : array[i][0],
+				'longitude' : array[i][1]
+			}));
 		}
-		
+
 	}
 }

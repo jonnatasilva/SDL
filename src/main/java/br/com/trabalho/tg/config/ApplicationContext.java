@@ -13,6 +13,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -82,4 +83,9 @@ public class ApplicationContext {
 		
 		return va;
 	}
+	
+	@Bean(name = "multipartResolver")
+    public CommonsMultipartResolver resolver() {
+        return new CommonsMultipartResolver();
+    }
 }
