@@ -14,6 +14,9 @@ import org.json.JSONArray;
 
 @Entity
 @Table(name="area", uniqueConstraints={@UniqueConstraint(columnNames={"codigo"})})
+//@NamedQueries({
+//	@NamedQuery(name = "", query = ""), 
+//	@NamedQuery(name = "", query = "")})
 public class Area {
 	
 	

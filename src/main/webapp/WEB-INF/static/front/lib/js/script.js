@@ -84,14 +84,14 @@ $(function() {
  * Abre formulário para salvar area e adiciona metódo para escutar ação de
  * submit do form
  */
-function openForm(coords) {
+function openForm(coords, codigo, descricao) {
 	$('#formSalvar')
 			.on(
 					'show.bs.modal',
 					function(event) {
 						var button = $(event.relatedTarget) // Button that
-															// triggered the
-															// modal
+						// triggered the
+						// modal
 						// var recipient = button.data('whatever') // Extract
 						// info from data-*
 						// attributes
@@ -109,9 +109,9 @@ function openForm(coords) {
 						$('.erroCampos').hide();
 						$('.falhaSalvar').hide();
 						$('.arrayIncorreto').hide();
-						var codigo = getUrlParameter('codigoArea');
-						var descricao = getUrlParameter('descricaoArea');
-
+//						var codigo = getUrlParameter('codigoArea');
+//						var descricao = getUrlParameter('descricaoArea');
+						console.log(codigo);
 						$('#formSalvar #formModalSalvar input[name="codigo"]')
 								.val(codigo);
 						$(
@@ -132,8 +132,7 @@ function openForm(coords) {
 															$form
 																	.serializeArray(),
 															function(i, field) {
-																if (field.name
-																		.indexOf("codigo") === 0) {
+																if (field.nameindexOf("codigo") === 0) {
 																	if (field.value === undefined
 																			|| field.value === "") {
 																		$(
@@ -189,8 +188,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
 		sParameterName = sURLVariables[i].split('=');
 
 		if (sParameterName[0] === sParam) {
-			return sParameterName[1] === undefined ? true : sParameterName[1]
-					.replace('+', ' ');
+			return sParameterName[1] === undefined ? true : sParameterName[1].replace('+', ' ');
 		}
 	}
 };
@@ -245,10 +243,10 @@ $(document)
 									'show.bs.modal',
 									function(event) {
 										var button = $(event.relatedTarget) // Button
-																			// that
-																			// triggered
-																			// the
-																			// modal
+										// that
+										// triggered
+										// the
+										// modal
 										// var recipient =
 										// button.data('whatever') // Extract
 										// info from data-*
@@ -267,8 +265,8 @@ $(document)
 										// input').val(recipient)
 										array = [];
 										$('.plusInfo').hide();
-										$("#formModal").empty();
-										$("#formModal").html(
+										$("#formModal .formGeometry").empty();
+										$("#formModal .formGeometry").html(
 												addLinhaVertice(0, {}));
 										$('.arrayIncorreto').hide();
 										$('.erroCampos').hide();
@@ -295,14 +293,18 @@ $(document)
 										$("input:file")
 												.change(
 														function(event) {
+															$('.loadFile')
+																	.show();
 															f = event.target.files[0];
 															if (f.type === 'text/plain') {
 																readFile(f,
 																		false);
 															} else if (f.type
 																	.indexOf('kml') != -1) {
-																var dados = readFile(
-																		f, true);
+																var url = '/backendTG/map/polygon/parseKML';
+																readFile(f,
+																		true,
+																		url);
 															}
 														});
 									});
@@ -315,7 +317,7 @@ function addRow() {
 		'latitude' : $form.find(':input#latitude')[0].value,
 		'longitude' : $form.find(':input#longitude')[0].value
 	};
-	if (!validateBrancoOuZero($form)) {
+	if (!validateBrancoOuZero($form, ['codigo'])) {
 		$('#formModal').append(addLinhaVertice(l, value));
 		mensagemValidateForm('.erroCampos', true);
 	} else {
@@ -358,19 +360,28 @@ function savePaint() {
 	array = [];
 	values = [];
 	$form = $('#formModal');
-	if (!validateBrancoOuZero($form)) {
+	var codigo = '';
+	var descricao = '';
+	var background = $('#backgroundColorPicker').val();
+	var border = $('#borderColorPicker').val();
+	defineStyle(background, border);
+	if (!validateBrancoOuZero($form, ['codigo'])) {
 		mensagemValidateForm('.erroCampos', true);
 		$.each($form.serializeArray(), function(i, field) {
-
 			if (field.name.indexOf("lat") === 0) {
 				values.push(Number(field.value));
-			} else {
-				values.push(Number(field.value));
+			} else if(field.name.indexOf("long")) {
+				values.push(Number(field.value) === 0);
 				array.push(values);
 				values = [];
+			} else if(field.name.indexOf("codigo") === 0) {
+				codigo = field.value;
+			} else if(field.name.indexOf("descricao") === 0) {
+				descricao = filed.value;
 			}
 		});
-		var polygon = createPolygon(array);
+		var polygon = createPolygon(array, codigo, descricao);
+		
 		addFeature(polygon);
 		return true;
 
@@ -381,11 +392,10 @@ function savePaint() {
 
 }
 
-function validateBrancoOuZero(form) {
+function validateBrancoOuZero(form, arrayCampos) {
 	var erroEcontrado = false;
 	$.each($(form).serializeArray(), function(i, field) {
-		if (field.value === undefined || field.value === ''
-				|| field.value === '0') {
+		if (arrayCampos.indexOf(field.name) != 0 && (field.value === undefined || field.value === '' || field.value === '0')) { 
 			erroEcontrado = true;
 			return false;
 
@@ -394,7 +404,7 @@ function validateBrancoOuZero(form) {
 	return erroEcontrado;
 }
 
-function readFile(f, isKml) {
+function readFile(f, isKml, url) {
 	var reader = new FileReader();
 	var array = [];
 	reader.onload = (function(theFile) {
@@ -411,9 +421,8 @@ function readFile(f, isKml) {
 					array = null;
 				}
 
-				exibeFile(array);
+				exibeImportTxt(array);
 			} else {
-				var url = '/backendTG/map/polygon/parseKML';
 				var formData = new FormData();
 				formData.append('kml', f, f.name);
 				var xhr = new XMLHttpRequest();
@@ -421,14 +430,13 @@ function readFile(f, isKml) {
 
 				xhr.onload = function() {
 					if (xhr.status === 200) {
-						console.log(xhr);
+						var result = $.parseJSON(xhr.response);
+						exibeImportKML(result);
 					} else {
 						alert('An error occurred!');
 					}
 				};
 				xhr.send(formData);
-				//console.log(ajaxEnviarPost(url, contents, true, undefined));
-				return contents;
 			}
 		};
 	})(f);
@@ -436,18 +444,37 @@ function readFile(f, isKml) {
 	reader.readAsText(f);
 
 }
-function exibeFile(array) {
+function exibeImportTxt(array) {
 	if (array === null) {
 		$('#btnModal .plusInfo').show();
 		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
 	} else if (array.length > 0) {
-		$("#formModal").empty();
+		$("#formModal .formGeometry").empty();
 		for (var i = 0; i < array.length; i++) {
-			$("#formModal").append(addLinhaVertice(i, {
+			$("#formModal .formGeometry").append(addLinhaVertice(i, {
 				'latitude' : array[i][0],
 				'longitude' : array[i][1]
 			}));
 		}
-
 	}
+	$('.loadFile').hide();
+}
+
+function exibeImportKML(obj) {
+	var array = obj.locale;
+	if (array === null) {
+		$('#btnModal .plusInfo').show();
+		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
+	} else if (array.length > 0) {
+		$("#formModal .formGeometry").empty();
+		for (var i = 0; i < array.length; i++) {
+			$("#formModal .formGeometry").append(addLinhaVertice(i, {
+				'latitude' : array[i].latitude,
+				'longitude' : array[i].longitude,
+			}));
+		}
+		$('#formModal .formHidden #codigo').val(obj.codigo != undefined ? obj.codigo : 0);
+		$('#formModal .formHidden #descricao').val(obj.descricao);
+	}
+	$('.loadFile').hide();
 }

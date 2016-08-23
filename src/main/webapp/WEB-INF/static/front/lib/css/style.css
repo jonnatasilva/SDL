@@ -103,3 +103,7 @@ body {
 .iconOpt, .iconOpt a {
 	color: #2F4F4F;
 }
+.modal-body {
+	max-height: 300px;
+	overflow-y: scroll;
+}

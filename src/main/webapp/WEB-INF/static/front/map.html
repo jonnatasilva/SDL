@@ -99,13 +99,22 @@
 	          
 	        </div>
 	        <div class="modal-body">
-	          <span class="iconOpt"><a href="#" id="btnAddVert"><i class="fa fa-plus"></i></a></span>
+	          <span class="iconOpt"><a href="#" id="btnAddVert"><i class="fa fa-plus"></i></a> Adicionar</span>
 	          <span class="iconOpt"><input type="file" class="jfilestyle" data-input="false" 
-	          	data-buttonText="<span class='glyphicon glyphicon-folder-open'></span>" accept=".txt, .kml"></span>
+	          	data-buttonText="<span class='glyphicon glyphicon-folder-open'></span> Import" accept=".txt, .kml"></span>
+	          <img class="loadFile" alt="Fazendo Upload" src="lib/img/loading.gif" width=70px" height="70px" style="display: none;">
+	          <span>Background </span> <input type="color" id="backgroundColorPicker" 
+	          name="backgroundColor" value="#ff0000"> <div id="hexcolor" style="float: left"></div>
+	          <span>Border </span> <input type="color" id="borderColorPicker" 
+	          name="borderColor" value="#ff0000"> <div id="hexcolor"></div>
 	          <p />
 	          <form id="formModal" class="form-inline">
-	          
-			 	
+	          	<div class="formGeometry">
+	          	</div>
+			 	<div class="formHidden">
+			 		<input id="codigo" type="hidden" name="codigo" value="0"/>
+			 		<input id="descricao" type="hidden" name="descricao" value=""/>
+			 	</div>
 	          </form>
 	          <div class="plusInfo alert alert-danger">
 	          		<span class="erroCampos">Informações devem ser preenchidas!</span>
