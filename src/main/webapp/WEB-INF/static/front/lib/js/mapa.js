@@ -1,3 +1,45 @@
+function Mapa() {
+
+}
+
+Mapa.prototype = {
+	addFeature : function(feature) {
+		this.source.addFeature(feature)
+	},
+	createPolygon : function(coords, codigo, descricao) {
+		var thing = new ol.geom.Polygon([ coords ]);
+		// thing.transform('EPSG:4326', 'EPSG:3857');
+		var feature = new ol.Feature({
+			id : codigo,
+			name : 'foo',
+			geometry : thing
+		});
+		return feature;
+	},
+	getDrawInteraction : function() {
+		var value = 'Polygon';
+		var draw;
+		draw = new ol.interaction.Draw({
+			source : source,
+			type : /** @type {ol.geom.GeometryType} */
+			(value)
+		});
+		return draw;
+	},
+	getSelectSingleClick : function() {
+		return this.selectSingleClick;
+	},
+	addInteraction : function(interaction) {
+		this.map.addInteraction(interaction);
+	},
+	removeInteraction : function(interaction) {
+		this.map.removeInteraction(interaction);
+	},
+	defineStyle: function() {
+		
+	}
+}
+
 $(function() {
 	var map;
 	var draw; // global so we can remove it later
@@ -179,34 +221,3 @@ function removeInteraction(interaction) {
 	map.removeInteraction(interaction);
 }
 
-function defineStyle(backgroundColor, borderColor) {
-	console.log(backgroundColor);
-	console.log(borderColor);
-	style: new ol.style.Style({
-		fill : new ol.style.Fill({
-			color : 'rgba(255, 255, 255, 0.6)'
-		}),
-		stroke : new ol.style.Stroke({
-			color : '#319FD3',
-			width : 1
-		}),
-		image : new ol.style.Circle({
-			radius : 7,
-			fill : new ol.style.Fill({
-				color : '#ffcc33'
-			})
-		}),
-		text : new ol.style.Text({
-			font : '12px helvetica,sans-serif',
-			text : source.Feature,
-			rotation : 360 * Math.PI / 180,
-			fill : new ol.style.Fill({
-				color : '#000'
-			}),
-			stroke : new ol.style.Stroke({
-				color : '#fff',
-				width : 1
-			})
-		})
-	})
-}

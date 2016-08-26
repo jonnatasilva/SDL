@@ -1,7 +1,16 @@
+var model = new Model();
+
 $(function() {
+
 	function prepare() {
 		/* buscar areas já cadastro para o local */
-		getAreas();
+		model.listAreas(1, function(data){
+			carregaGeoJsonObject(data);
+		}, function() {
+			alert("erro");
+		}, function() {
+			$('#preparando').hide();
+		});
 
 	}
 
@@ -40,43 +49,6 @@ $(function() {
 		};
 		mapa(geojsonObject);
 	}
-
-	function getFeaturesByLocal(url, params, retorna) {
-		$.ajax({
-			type : "GET",
-			url : url,
-			data : {
-				idLocal : params
-			},
-			// async : !retorna,
-			contentType : "application/json; charset=utf-8",
-			dataType : "json",
-
-			statusCode : {
-				200 : function(data) {
-					if (retorna) {
-						carregaGeoJsonObject(data);
-					}
-					setInterval(function() {
-						$('#preparando').hide();
-					}, 5000);
-
-				},
-				409 : function() {
-					alert("Erro")
-				}
-
-			}
-
-		});
-	}
-
-	function getAreas(idLocal) {
-		var url = '/backendTG/map/polygon/listJSON';
-		var enviar = 1;
-		getFeaturesByLocal(url, enviar, true);
-	}
-
 	prepare();
 });
 
@@ -158,6 +130,7 @@ function openForm(coords, codigo, descricao) {
 											var url = "/backendTG/map/polygon/salvar";
 
 											if (!erroEnc) {
+												model.salvarArea(values, function() {}, function() {}, function(){});
 												ajaxEnviarPost(url, values,
 														modal);
 											}
@@ -238,104 +211,105 @@ $(document)
 						}, 300000);
 					});
 
-					$('#btnModal')
-							.on(
-									'show.bs.modal',
-									function(event) {
-										var button = $(event.relatedTarget) // Button
-										// that
-										// triggered
-										// the
-										// modal
-										// var recipient =
-										// button.data('whatever') // Extract
-										// info from data-*
-										// attributes
-										// If necessary, you could initiate an
-										// AJAX request here (and then do
-										// the updating in a callback).
-										// Update the modal's content. We'll use
-										// jQuery here, but you could use
-										// a data binding library or other
-										// methods instead.
-										var modal = $(this)
-										// modal.find('.modal-title').text('New
-										// message to ' + recipient)
-										// modal.find('.modal-body
-										// input').val(recipient)
-										array = [];
-										$('.plusInfo').hide();
-										$("#formModal .formGeometry").empty();
-										$("#formModal .formGeometry").html(
-												addLinhaVertice(0, {}));
-										$('.arrayIncorreto').hide();
-										$('.erroCampos').hide();
-										$(
-												'#btnModal .plusInfo .arrayIncorretoImpt')
-												.hide();
-										$('.arrayInsert').html('');
-										$('#btnAddVert').on('click',
-												function() {
-													addRow();
-												});
-										$("#savePaint").on('click', function() {
-											if (savePaint()) {
-												modal.modal('hide');
-											}
-
-										});
-
-										$(":file")
-												.jfilestyle(
-														{
-															buttonText : "<span class='glyphicon glyphicon-folder-open'></span>"
-														});
-										$("input:file")
-												.change(
-														function(event) {
-															$('.loadFile')
-																	.show();
-															f = event.target.files[0];
-															if (f.type === 'text/plain') {
-																readFile(f,
-																		false);
-															} else if (f.type
-																	.indexOf('kml') != -1) {
-																var url = '/backendTG/map/polygon/parseKML';
-																readFile(f,
-																		true,
-																		url);
-															}
-														});
-									});
+//					$('#btnModal')
+//							.on(
+//									'show.bs.modal',
+//									function(event) {
+//										var button = $(event.relatedTarget) // Button
+//										// that
+//										// triggered
+//										// the
+//										// modal
+//										// var recipient =
+//										// button.data('whatever') // Extract
+//										// info from data-*
+//										// attributes
+//										// If necessary, you could initiate an
+//										// AJAX request here (and then do
+//										// the updating in a callback).
+//										// Update the modal's content. We'll use
+//										// jQuery here, but you could use
+//										// a data binding library or other
+//										// methods instead.
+//										var modal = $(this)
+//										// modal.find('.modal-title').text('New
+//										// message to ' + recipient)
+//										// modal.find('.modal-body
+//										// input').val(recipient)
+//										array = [];
+//										$('.plusInfo').hide();
+//										$("#formModal .formGeometry").empty();
+//										$("#formModal .formGeometry").html(
+//												addLinhaVertice(0, {}));
+//										$('.arrayIncorreto').hide();
+//										$('.erroCampos').hide();
+//										$(
+//												'#btnModal .plusInfo .arrayIncorretoImpt')
+//												.hide();
+//										$('.arrayInsert').html('');
+//										$('#btnAddVert').on('click',
+//												function() {
+//													addRow();
+//												});
+//										$("#savePaint").on('click', function() {
+//											if (savePaint()) {
+//												modal.modal('hide');
+//											}
+//
+//										});
+//
+//										$(":file")
+//												.jfilestyle(
+//														{
+//															buttonText : "<span class='glyphicon glyphicon-folder-open'></span>"
+//														});
+//										$("input:file")
+//												.change(
+//														function(event) {
+//															$('.loadFile')
+//																	.show();
+//															f = event.target.files[0];
+//															if (f.type === 'text/plain') {
+//																readFile(f,
+//																		false);
+//															} else if (f.type
+//																	.indexOf('kml') != -1) {
+//																var url = '/backendTG/map/polygon/parseKML';
+//																readFile(f,
+//																		true,
+//																		url);
+//															}
+//														});
+//									});
 				});
 
-function addRow() {
-	$form = $('#formModal');
-	l = $form.find(':input#latitude').length;
-	value = {
-		'latitude' : $form.find(':input#latitude')[0].value,
-		'longitude' : $form.find(':input#longitude')[0].value
-	};
-	if (!validateBrancoOuZero($form, ['codigo'])) {
-		$('#formModal').append(addLinhaVertice(l, value));
-		mensagemValidateForm('.erroCampos', true);
-	} else {
-		mensagemValidateForm('.erroCampos', false);
-	}
-
-}
-
-function mensagemValidateForm(obj, valido) {
-	if (!valido) {
-		$('.plusInfo').show();
-		$(obj).show();
-	} else {
-		$('.plusInfo').hide();
-		$(obj).hide();
-	}
-
-}
+//function addRow() {
+//	$form = $('#formModal');
+//	l = $form.find(':input#latitude').length;
+//	value = {
+//		'latitude' : $form.find(':input#latitude')[0].value,
+//		'longitude' : $form.find(':input#longitude')[0].value
+//	};
+//	if (!validateBrancoOuZero($form, ['codigo'])) {
+//		$('#formModal').append(addLinhaVertice(l, value));
+//		mensagemValidateForm('.erroCampos', true);
+//	} else {
+//		mensagemValidateForm('.erroCampos', false);
+//	}
+//
+//}
+//
+//function mensagemValidateForm(obj, valido) {
+//	if (!valido) {
+//		console.log($('.plusInfo').css('display'));
+//		$('.plusInfo').css('display', 'inline-block');
+//		$(obj).show();
+//	} else {
+//		$('.plusInfo').hide();
+//		$(obj).hide();
+//	}
+//
+//}
 
 function addLinhaVertice(l, val) {
 	valLat = val.latitude != undefined ? val.latitude : 0;
@@ -392,89 +366,89 @@ function savePaint() {
 
 }
 
-function validateBrancoOuZero(form, arrayCampos) {
-	var erroEcontrado = false;
-	$.each($(form).serializeArray(), function(i, field) {
-		if (arrayCampos.indexOf(field.name) != 0 && (field.value === undefined || field.value === '' || field.value === '0')) { 
-			erroEcontrado = true;
-			return false;
+//function validateBrancoOuZero(form, arrayCampos) {
+//	var erroEcontrado = false;
+//	$.each($(form).serializeArray(), function(i, field) {
+//		if (arrayCampos.indexOf(field.name) != 0 && (field.value === undefined || field.value === '' || field.value === '0')) { 
+//			erroEcontrado = true;
+//			return false;
+//
+//		}
+//	});
+//	return erroEcontrado;
+//}
 
-		}
-	});
-	return erroEcontrado;
-}
+//function readFile(f, isKml, url) {
+//	var reader = new FileReader();
+//	var array = [];
+//	reader.onload = (function(theFile) {
+//		return function(e) {
+//
+//			var contents = e.target.result;
+//			if (!isKml) {
+//				if (contents.substring(0, 2) != '[['
+//						&& contents.substring(0, 1) === '[') {
+//					array = $.parseJSON('[' + contents + ']');
+//				} else if (contents.substring(0, 2) === '[[') {
+//					array = $.parseJSON(contents);
+//				} else {
+//					array = null;
+//				}
+//
+//				exibeImportTxt(array);
+//			} else {
+//				var formData = new FormData();
+//				formData.append('kml', f, f.name);
+//				var xhr = new XMLHttpRequest();
+//				xhr.open('POST', url, true);
+//
+//				xhr.onload = function() {
+//					if (xhr.status === 200) {
+//						var result = $.parseJSON(xhr.response);
+//						exibeImportKML(result);
+//					} else {
+//						alert('An error occurred!');
+//					}
+//				};
+//				xhr.send(formData);
+//			}
+//		};
+//	})(f);
+//
+//	reader.readAsText(f);
+//
+//}
+//function exibeImportTxt(array) {
+//	if (array === null) {
+//		$('#btnModal .plusInfo').show();
+//		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
+//	} else if (array.length > 0) {
+//		$("#formModal .formGeometry").empty();
+//		for (var i = 0; i < array.length; i++) {
+//			$("#formModal .formGeometry").append(addLinhaVertice(i, {
+//				'latitude' : array[i][0],
+//				'longitude' : array[i][1]
+//			}));
+//		}
+//	}
+//	$('.loadFile').hide();
+//}
 
-function readFile(f, isKml, url) {
-	var reader = new FileReader();
-	var array = [];
-	reader.onload = (function(theFile) {
-		return function(e) {
-
-			var contents = e.target.result;
-			if (!isKml) {
-				if (contents.substring(0, 2) != '[['
-						&& contents.substring(0, 1) === '[') {
-					array = $.parseJSON('[' + contents + ']');
-				} else if (contents.substring(0, 2) === '[[') {
-					array = $.parseJSON(contents);
-				} else {
-					array = null;
-				}
-
-				exibeImportTxt(array);
-			} else {
-				var formData = new FormData();
-				formData.append('kml', f, f.name);
-				var xhr = new XMLHttpRequest();
-				xhr.open('POST', url, true);
-
-				xhr.onload = function() {
-					if (xhr.status === 200) {
-						var result = $.parseJSON(xhr.response);
-						exibeImportKML(result);
-					} else {
-						alert('An error occurred!');
-					}
-				};
-				xhr.send(formData);
-			}
-		};
-	})(f);
-
-	reader.readAsText(f);
-
-}
-function exibeImportTxt(array) {
-	if (array === null) {
-		$('#btnModal .plusInfo').show();
-		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
-	} else if (array.length > 0) {
-		$("#formModal .formGeometry").empty();
-		for (var i = 0; i < array.length; i++) {
-			$("#formModal .formGeometry").append(addLinhaVertice(i, {
-				'latitude' : array[i][0],
-				'longitude' : array[i][1]
-			}));
-		}
-	}
-	$('.loadFile').hide();
-}
-
-function exibeImportKML(obj) {
-	var array = obj.locale;
-	if (array === null) {
-		$('#btnModal .plusInfo').show();
-		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
-	} else if (array.length > 0) {
-		$("#formModal .formGeometry").empty();
-		for (var i = 0; i < array.length; i++) {
-			$("#formModal .formGeometry").append(addLinhaVertice(i, {
-				'latitude' : array[i].latitude,
-				'longitude' : array[i].longitude,
-			}));
-		}
-		$('#formModal .formHidden #codigo').val(obj.codigo != undefined ? obj.codigo : 0);
-		$('#formModal .formHidden #descricao').val(obj.descricao);
-	}
-	$('.loadFile').hide();
-}
+//function exibeImportKML(obj) {
+//	var array = obj.locale;
+//	if (array === null) {
+//		$('#btnModal .plusInfo').show();
+//		$('#btnModal .plusInfo .arrayIncorretoImpt').show();
+//	} else if (array.length > 0) {
+//		$("#formModal .formGeometry").empty();
+//		for (var i = 0; i < array.length; i++) {
+//			$("#formModal .formGeometry").append(addLinhaVertice(i, {
+//				'latitude' : array[i].latitude,
+//				'longitude' : array[i].longitude,
+//			}));
+//		}
+//		$('#formModal .formHidden #codigo').val(obj.codigo != undefined ? obj.codigo : 0);
+//		$('#formModal .formHidden #descricao').val(obj.descricao);
+//	}
+//	$('.loadFile').hide();
+//}

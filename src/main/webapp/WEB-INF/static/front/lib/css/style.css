@@ -91,7 +91,10 @@ body {
 .plusInfo {
 	margin: 4px!important;
 }
+/* .plusInfo, .erroCampos, .arrayIncorreto, .arrayIncorretoImpt, .arrayInc { */
+/* 	display: none !important; */
 	
+/* }	 */
 @font-face{ 
 	font-family : ' FontAwesome ' ; 
 	src : url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?v=4.2.0 ' ); 
