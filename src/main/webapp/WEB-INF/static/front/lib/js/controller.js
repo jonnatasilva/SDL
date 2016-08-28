@@ -25,4 +25,13 @@ function Controller(model, view) {
     		_this._view._elements.modalAutomatic.gifLoad.hide();
     	});
     });
+    this._view.salvar.attach(function(sender, args) {
+    	_this._model.salvarArea(args.area, function() {
+    		_this._view._elements.modalSalvar.hide();
+    	}, function() {
+    		alert();
+    	}, function() {
+    		
+    	})
+    });
 }

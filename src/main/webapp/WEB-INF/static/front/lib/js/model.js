@@ -19,6 +19,7 @@ Model.prototype = {
 		});
 	},
 	salvarArea: function(area, callbackSucesso, callbackErro, callbackAlways) {
+		area.locale = this.tranformToObj(area.locale);
 		$.post('/backendTG/map/polygon/salvar', {area: JSON.stringify(area)}).done(function() {
 			callbackSucesso();
 		}).fail(function() {
@@ -83,5 +84,16 @@ Model.prototype = {
 			};
 		})(f);
 		reader.readAsText(f);
+	},
+	tranformToObj : function(c) {
+		var retorno = '';
+		for (var i = 0; i < c[0].length; i++) {
+			retorno += '[' + c[0][i].toString() + ']';
+			;
+			if (i < (c[0].length - 1)) {
+				retorno += ',';
+			}
+		}
+		return retorno;
 	}
 }

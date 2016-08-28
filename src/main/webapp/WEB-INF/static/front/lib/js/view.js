@@ -21,6 +21,7 @@ Event.prototype = {
 function View(model, elements) {
 	this._model = model;
 	this._elements = elements;
+	this._mapa = new Mapa();
 	var _this = this;
 	
 	this.salvar = new Event(this);
@@ -77,15 +78,31 @@ function View(model, elements) {
 			}
 		});
 	});
+	this._mapa.openFormSave.attach(function (sender, args) {
+		_this.openForm(args.coords, args.feature);
+	});
 }
 
 View.prototype = {
+	show : function () {
+		this.buildMapa();
+	},
+	buildMapa : function() {
+		var _this = this;
+		this._model.listAreas(1, function(data){
+			_this._mapa.buildMapa(data);
+		}, function() {
+			alert("erro");
+		}, function() {
+			_this._elements.painelPrerando.hide();
+		});
+	},
 	next: function($form) {
 		array = [];
 		values = [];
 		codigo = '';
 		descricao = '';
-		this.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());
+//		this.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());
 		if (!this._model.validateBrancoOuZero($form, ['codigo', 'descricao'])) {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, true);
 			$.each($form.serializeArray(), function(i, field) {
@@ -101,9 +118,9 @@ View.prototype = {
 					descricao = filed.value;
 				}
 			});
-			var polygon = createPolygon(array, codigo, descricao);
+			var polygon = this._mapa.createPolygon(array, codigo, descricao);
 			
-			addFeature(polygon);
+			this._mapa.addFeature(polygon);
 			return true;
 
 		} else {
@@ -205,6 +222,48 @@ View.prototype = {
 			}
 		}
 		this._elements.modalAutomatic.gifLoad.hide();
+	},
+	openForm : function(coords, feature) {
+		var _this = this;
+		this._elements.modalSalvar['this'].on('show.bs.modal', function(event) {
+			var button = $(event.relatedTarget);
+			var modal = _this._elements.modalSalvar['this'];
+			containErro = _this._elements.modalSalvar.plusInfo;
+			_this.hideElementsObjeto(containErro);
+			console.log(feature);
+			$('#formSalvar #formModalSalvar input[name="codigo"]').val(feature.get('id'));
+			$('#formSalvar #formModalSalvar input[name="descricao"]').val(feature.get('name'));
+			$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);
+			
+			_this._elements.modalSalvar.btnSave.on('click', function() {
+				values = {};
+				var $form = _this._elements.modalSalvar.formModal;
+				var erroEnc = false;
+				$.each($form.serializeArray(), function(i, field) {
+					if (field.name.indexOf("codigo") === 0) {
+						if (field.value === undefined || field.value === "") {
+							containErro.erroCampos.show();
+							erroEnc = true;
+						}
+						values['codigo'] = field.value;
+					} else if (field.name.indexOf("descricao") === 0) {
+						if (field.value === undefined || field.value === "") {
+							containErro.erroCampos.show();
+							erroEnc = true;
+					}
+					values['descricao'] = field.value;
+					} else {
+						values['locale'] = field.value;
+					}
+				});
+				if (!erroEnc) {
+					_this.salvar.notify({ index : event.target.selectedIndex, area: values });
+//					model.salvarArea(values, function() {}, function() {}, function(){});
+//					ajaxEnviarPost(url, values, modal);
+				}
+			});
+		});
+		$('#formSalvar').modal('show');
 	}
 }
 
@@ -212,6 +271,7 @@ $(function() {
 	var model = new Model();
 	view = new View(model, {
 		'paintManual' : $('.btnPintar'),
+		'painelPrerando' : $('#preparando'),
 		'modalAutomatic' : {
 			'this' : $('#btnModal'),
 			'verticeAdd': $('#btnModal #btnAddVert'),
@@ -228,7 +288,18 @@ $(function() {
 			},
 			'background': $('#backgroundColorPicker'),
 			'border': $('#borderColorPicker')
-		}
+		},
+		'modalSalvar' : {
+			'this' : $('#formSalvar'),
+			'formModal': $('#formSalvar #formModalSalvar'),
+			'plusInfo' : {
+				'this' : $('#formSalvar .plusInfo'),
+				'erroCampos ': $('#formSalvar .plusInfo .erroCampos'),
+				'falhaSalvar' : $('#formSalvar .plusInfo .falha'),
+			},
+			'btnSave' : $('#formSalvar #save')
+		} 
 	});
 	var controller = new Controller(model, view);
+	view.show();
 });
