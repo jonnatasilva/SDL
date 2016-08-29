@@ -1,4 +1,4 @@
-var model = new Model();
+//var model = new Model();s
 
 //$(function() {
 //
@@ -240,8 +240,8 @@ var model = new Model();
 //																		url);
 //															}
 //														});
-//									});
-				});
+////									});
+//				});
 
 //function addRow() {
 //	$form = $('#formModal');
@@ -271,24 +271,24 @@ var model = new Model();
 //
 //}
 
-function addLinhaVertice(l, val) {
-	valLat = val.latitude != undefined ? val.latitude : 0;
-	valLon = val.longitude != undefined ? val.longitude : 0;
-	linha = '<div class="form-group">';
-	linha += '<label for="latitude" class="form-control-label">Latitude:</label>';
-	linha += ' <input type="number" name="latitude' + l
-			+ '" class="form-control" id="latitude" value="' + valLat
-			+ '" placeholder="Latitude" autofocus>';
-	linha += '</div> ';
-	linha += '<div class="form-group">';
-	linha += '<label for="longitude" class="form-control-label">Longitude:</label>';
-	linha += ' <input type="number" name="longitude' + l
-			+ '" class="form-control" id="longitude"  value="' + valLon
-			+ '" placeholder="Longitude">';
-	linha += '</div><p />';
-
-	return linha;
-}
+//function addLinhaVertice(l, val) {
+//	valLat = val.latitude != undefined ? val.latitude : 0;
+//	valLon = val.longitude != undefined ? val.longitude : 0;
+//	linha = '<div class="form-group">';
+//	linha += '<label for="latitude" class="form-control-label">Latitude:</label>';
+//	linha += ' <input type="number" name="latitude' + l
+//			+ '" class="form-control" id="latitude" value="' + valLat
+//			+ '" placeholder="Latitude" autofocus>';
+//	linha += '</div> ';
+//	linha += '<div class="form-group">';
+//	linha += '<label for="longitude" class="form-control-label">Longitude:</label>';
+//	linha += ' <input type="number" name="longitude' + l
+//			+ '" class="form-control" id="longitude"  value="' + valLon
+//			+ '" placeholder="Longitude">';
+//	linha += '</div><p />';
+//
+//	return linha;
+//}
 
 function savePaint() {
 	array = [];

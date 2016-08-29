@@ -1,6 +1,5 @@
 function Mapa() {
 	var map = null;
-	var draw = null;
 	var source = null;
 	var selectSingleClick = null;
 	var _this = this;
@@ -10,7 +9,7 @@ function Mapa() {
 
 Mapa.prototype = {
 	addFeature : function(feature) {
-		this.source.addFeature(feature)
+		this.source.addFeature(feature);
 	},
 	createPolygon : function(coords, codigo, descricao) {
 		var thing = new ol.geom.Polygon([ coords ]);
@@ -25,7 +24,7 @@ Mapa.prototype = {
 	getDrawInteraction : function() {
 		var value = 'Polygon';
 		var draw;
-		this.draw = new ol.interaction.Draw({
+		draw = new ol.interaction.Draw({
 			source : this.source,
 			type : /** @type {ol.geom.GeometryType} */
 			(value)
@@ -41,8 +40,35 @@ Mapa.prototype = {
 	removeInteraction : function(interaction) {
 		this.map.removeInteraction(interaction);
 	},
-	defineStyle: function() {
-		
+	defineStyle: function(backgroundColor, borderColor) {
+		style = new ol.style.Style({
+			fill : new ol.style.Fill({
+				color : backgroundColor
+			}),
+			stroke : new ol.style.Stroke({
+				color : borderColor,
+				width : 1
+			}),
+			image : new ol.style.Circle({
+				radius : 7,
+				fill : new ol.style.Fill({
+					color : '#ffcc33'
+				})
+			}),
+			text : new ol.style.Text({
+				font : '12px helvetica,sans-serif',
+				text : this._mapa.source.Feature,
+				rotation : 360 * Math.PI / 180,
+				fill : new ol.style.Fill({
+					color : '#000'
+				}),
+				stroke : new ol.style.Stroke({
+					color : '#fff',
+					width : 1
+				})
+			})
+		})
+		return style;
 	},
 	buildMapa : function(geojsonObject) {
 		var _this = this;
@@ -144,9 +170,9 @@ Mapa.prototype = {
 				popup.hide();
 			}
 		});
-		// map.on('click', function(evt) {
-		// console.log(evt.coordinate);
-		// });
+		 _this.map.on('click', function(evt) {
+			 console.log(evt.coordinate);
+		 });
 
 		// $('.btnDelete').on('click', function(){
 		// var features = source.getFeatures();
@@ -172,7 +198,8 @@ Mapa.prototype = {
 				'geometry' : {
 					'type' : 'Polygon',
 					'coordinates' : [ x ]
-				}
+				},
+//				'style': this.defineStyle(data[i]['backgroundColor'], data[i]['borderColor'])
 			});
 		}
 		var geojsonObject = {

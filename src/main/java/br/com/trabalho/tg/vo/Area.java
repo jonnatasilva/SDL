@@ -10,16 +10,15 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import lombok.Data;
+
 import org.json.JSONArray;
 
 @Entity
+@Data
 @Table(name="area", uniqueConstraints={@UniqueConstraint(columnNames={"codigo"})})
-//@NamedQueries({
-//	@NamedQuery(name = "", query = ""), 
-//	@NamedQuery(name = "", query = "")})
 public class Area {
-	
-	
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -33,6 +32,12 @@ public class Area {
 	@Column(name="locale", nullable=false)
 	private byte[] locale;
 	
+	@Column(name="backgroundColor", nullable=true)
+	private String backgroundColor;
+	
+	@Column(name="borderColor", nullable=true)
+	private String borderColor;
+	
 	@Transient
 	private Object[] localeObj;
 
@@ -40,46 +45,5 @@ public class Area {
 		String str = new String(this.locale, "UTF-8");
 		return new JSONArray("[" + str + "]");
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public byte[] getLocale() {
-		return locale;
-	}
-
-	public void setLocale(byte[] locale) {
-		this.locale = locale;
-	}
-
-	public Object[] getLocaleObj() {
-		return localeObj;
-	}
-
-	public void setLocaleObj(Object[] localeObj) {
-		this.localeObj = localeObj;
-	}
-
 	
 }	

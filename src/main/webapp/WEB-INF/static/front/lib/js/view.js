@@ -29,11 +29,11 @@ function View(model, elements) {
 	this.parseTXT = new Event(this);
 	
 	this._elements.paintManual.click(function() {
-		addInteraction(getDrawInteraction());
-		removeInteraction(selectSingleClick);
+		_this._mapa.addInteraction(_this._mapa.getDrawInteraction());
+		_this._mapa.removeInteraction(_this._mapa.getSelectSingleClick());
 		setInterval(function() {
-			removeInteraction(getDrawInteraction());
-			addInteraction(getSelectSingleClick());
+			_this._mapa.removeInteraction(_this._mapa.getDrawInteraction());
+			_this._mapa.addInteraction(_this._mapa.getSelectSingleClick());
 		}, 300000);
 	});
 	
@@ -102,61 +102,33 @@ View.prototype = {
 		values = [];
 		codigo = '';
 		descricao = '';
-//		this.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());
 		if (!this._model.validateBrancoOuZero($form, ['codigo', 'descricao'])) {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, true);
-			$.each($form.serializeArray(), function(i, field) {
+			formArray = $form.serializeArray();
+			for(var i = 0; i < formArray.length; i++) {
+				field = formArray[i];
 				if (field.name.indexOf("lat") === 0) {
 					values.push(Number(field.value));
-				} else if(field.name.indexOf("long")) {
-					values.push(Number(field.value) === 0);
+				} else if(field.name.indexOf("long") === 0) {
+					values.push(Number(field.value));
 					array.push(values);
 					values = [];
 				} else if(field.name.indexOf("codigo") === 0) {
 					codigo = field.value;
 				} else if(field.name.indexOf("descricao") === 0) {
-					descricao = filed.value;
+					descricao = field.value;
 				}
-			});
+			}
 			var polygon = this._mapa.createPolygon(array, codigo, descricao);
-			
+			style = this._mapa.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());			
+			polygon.setStyle(style);
 			this._mapa.addFeature(polygon);
-			return true;
-
 		} else {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, false);
-			return false;
 		}
 	},
 	defineStyle: function(backgroundColor, borderColor) {
-		style = new ol.style.Style({
-			fill : new ol.style.Fill({
-				color : backgroundColor
-			}),
-			stroke : new ol.style.Stroke({
-				color : borderColor,
-				width : 1
-			}),
-			image : new ol.style.Circle({
-				radius : 7,
-				fill : new ol.style.Fill({
-					color : '#ffcc33'
-				})
-			}),
-			text : new ol.style.Text({
-				font : '12px helvetica,sans-serif',
-				text : source.Feature,
-				rotation : 360 * Math.PI / 180,
-				fill : new ol.style.Fill({
-					color : '#000'
-				}),
-				stroke : new ol.style.Stroke({
-					color : '#fff',
-					width : 1
-				})
-			})
-		})
-		return style;
+		
 	},
 	mensagemValidateForm: function (obj, valido) {
 		if (!valido) {
@@ -224,13 +196,13 @@ View.prototype = {
 		this._elements.modalAutomatic.gifLoad.hide();
 	},
 	openForm : function(coords, feature) {
+		coords = this._model.tranformToObj(coords);
 		var _this = this;
 		this._elements.modalSalvar['this'].on('show.bs.modal', function(event) {
 			var button = $(event.relatedTarget);
 			var modal = _this._elements.modalSalvar['this'];
 			containErro = _this._elements.modalSalvar.plusInfo;
 			_this.hideElementsObjeto(containErro);
-			console.log(feature);
 			$('#formSalvar #formModalSalvar input[name="codigo"]').val(feature.get('id'));
 			$('#formSalvar #formModalSalvar input[name="descricao"]').val(feature.get('name'));
 			$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);

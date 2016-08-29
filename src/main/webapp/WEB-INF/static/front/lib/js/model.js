@@ -19,7 +19,6 @@ Model.prototype = {
 		});
 	},
 	salvarArea: function(area, callbackSucesso, callbackErro, callbackAlways) {
-		area.locale = this.tranformToObj(area.locale);
 		$.post('/backendTG/map/polygon/salvar', {area: JSON.stringify(area)}).done(function() {
 			callbackSucesso();
 		}).fail(function() {
