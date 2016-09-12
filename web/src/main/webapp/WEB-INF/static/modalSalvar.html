@@ -12,6 +12,12 @@
 			</div>
 			<div class="modal-body">
 				<form id="formModalSalvar" class="form-inline">
+					<select>
+						<option value="codigo" selected>${codigo}</option>
+						<c:forEach items="${local['areasLocal']}" var="area">
+							<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
+						</c:forEach>
+					</select>
 					<label class="form-control-label">Código: </label> <input autofocus
 						type="text" name="codigo" class="form-control" required> <label
 						class="form-control-label">Descrição: </label> <input type="text"

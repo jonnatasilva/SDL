@@ -21,9 +21,9 @@ $RECYCLE.BIN/
 # Operating System Files
 # =========================
 *.class
-*.project
-*.settings
-*.classpath
+.project
+.settings
+.classpath
 # OSX
 # =========================
 

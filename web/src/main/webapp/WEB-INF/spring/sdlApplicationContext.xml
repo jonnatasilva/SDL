@@ -21,6 +21,12 @@
 		<property name="jndiName" value="java:comp/env/bancoSDL" />
 		<property name="resourceRef" value="true" />
 	</bean>
+	
+<!-- 		<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 			<property name="jndiName" value="java:comp/env/bancoSDLSqlServer" /> -->
+<!-- 			<property name="resourceRef" value="true" /> -->
+<!-- 		</bean> -->
+	
 
 	<!-- Datasource <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
 		<property name="driverClassName" value="org.h2.Driver" /> <property name="url" 
@@ -45,6 +51,7 @@
 				<property name="showSql" value="false" />
 				<property name="generateDdl" value="true" />
 				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
+<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.SQLServerDialect"/> -->
 			</bean>
 		</property>
 	</bean>

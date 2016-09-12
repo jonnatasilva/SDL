@@ -155,7 +155,6 @@ Mapa.prototype = {
 	        features: select.getFeatures()
 	    });
 		this.modify.on('modifyend',function(e){
-			console.log(e.features.getArray()[0].get('name'));
 			coords = e.features.getArray()[0].getGeometry().getCoordinates();
 			_this.openFormSave.notify({ coords : coords, feature : e.features.getArray()[0]});
 		});
