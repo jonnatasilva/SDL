@@ -21,9 +21,11 @@ import br.com.trabalho.tg.core.handling.ExceptionHandling;
 import br.com.trabalho.tg.core.impl.SQLServerIpml;
 import br.com.trabalho.tg.core.mock.UsuarioMock;
 import br.com.trabalho.tg.core.model.AreaLocal;
+import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
 import br.com.trabalho.tg.core.service.AreaService;
+import br.com.trabalho.tg.core.service.HistoricoAreaService;
 import br.com.trabalho.tg.web.enums.MapeamentoEnum;
 import br.com.trabalho.tg.web.utils.KmlUtils;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
@@ -39,6 +41,9 @@ public class AreaController extends ExceptionHandling {
 
 	@Autowired
 	AreaService service;
+	
+	@Autowired
+	HistoricoAreaService historicoService;
 	
 	@Autowired
 	SQLServerIpml impl;
@@ -78,9 +83,10 @@ public class AreaController extends ExceptionHandling {
 		String arrayString = json.getString("locale");
 		area.setIdLocal(json.getLong("local"));
 		area.setLocale(arrayString.getBytes());
-
-		service.saveArea(area);
-
+		System.out.println(json);
+		area = service.saveArea(area);
+		System.out.println("Id Area: " + area.getId());
+		historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area.getId()));
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 

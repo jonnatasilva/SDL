@@ -167,7 +167,7 @@ Mapa.prototype = {
 			projection: new ol.proj.Projection('EPSG:4326'),
 			view : new ol.View({
 				center : ol.proj.fromLonLat([0, 0]),
-				zoom : 15
+				zoom : 4
 			})
 		});
 		

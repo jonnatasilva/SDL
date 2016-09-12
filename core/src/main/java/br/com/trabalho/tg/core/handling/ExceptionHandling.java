@@ -17,6 +17,7 @@ public class ExceptionHandling extends RuntimeException {
 	@ResponseStatus(value=HttpStatus.CONFLICT, reason="Opps, houve algum problema!")
 	@ExceptionHandler(Exception.class)
 	public void aboutException(Exception e) {
-		log.error(e);
+		log.error(e.getMessage());
+		log.error(e.getLocalizedMessage());
 	}
 }

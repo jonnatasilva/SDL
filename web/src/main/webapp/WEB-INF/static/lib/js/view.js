@@ -310,8 +310,8 @@ View.prototype = {
 						values['locale'] = field.value;
 					} else if(field.name.indexOf("local") === 0) {
 						values['local'] = field.value;
-					} else if(field.name.indexOf("local") === 0) {
-						
+					} else if(field.name.indexOf("usuario") === 0) {
+						values['usuario'] = field.value;
 					}
 				});
 				if (!erroEnc) {
