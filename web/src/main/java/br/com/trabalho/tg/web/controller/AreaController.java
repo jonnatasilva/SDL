@@ -3,8 +3,6 @@ package br.com.trabalho.tg.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class AreaController extends ExceptionHandling {
 	 * Met�do request ir� retornar a p�gina default para a manipula��o das
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	private ModelAndView iniciar(HttpServletRequest request) throws Exception {
+	private ModelAndView iniciar() throws Exception {
 //		impl.findByLocation(null, null);
 		List<AreaLocal> areas = new ArrayList<AreaLocal>();
 		for(Integer i = 1; i <= 3; i++) {
@@ -78,6 +76,7 @@ public class AreaController extends ExceptionHandling {
 		area.setCodigo(json.getString("codigo"));
 		area.setDescricao(json.getString("descricao"));
 		String arrayString = json.getString("locale");
+		area.setIdLocal(json.getLong("local"));
 		area.setLocale(arrayString.getBytes());
 
 		service.saveArea(area);

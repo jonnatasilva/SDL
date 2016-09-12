@@ -97,16 +97,18 @@ function View(model, elements, usuario, local) {
 	this.parseTXT = new Event(this);
 	
 	this._elements.modificar.click(function() {
-		_this._mapa.removeInteraction(_this._mapa.getSelectSingleClick());
+		_this._mapa.addModifyInteraction();
 	});
 
 	this._elements.paintManual.click(function() {
-		_this._mapa.addInteraction(_this._mapa.getDrawInteraction());
-		_this._mapa.removeInteraction(_this._mapa.getSelectSingleClick());
+		_this._mapa.addDrawInteraction();
 		setInterval(function() {
-			_this._mapa.removeInteraction(_this._mapa.getDrawInteraction());
-			_this._mapa.addInteraction(_this._mapa.getSelectSingleClick());
+			_this._mapa.addSelectSingleClickInteraction();
 		}, 300000);
+	});
+	
+	this._elements.visualizarDeta.click(function() {
+		_this._mapa.addSelectSingleClickInteraction();
 	});
 	
 	this._elements.modalAutomatic['this'].on('show.bs.modal', function(event) {
@@ -150,8 +152,13 @@ function View(model, elements, usuario, local) {
 		});
 	});
 	this._mapa.openFormSave.attach(function (sender, args) {
+//		_this._mapa.removeInteractions();
 		_this.openForm(args.coords, args.feature);
 	});
+	this._elements.buscarArea.change(function(event){
+		_this._mapa.buscarArea($(this).val());
+	});
+
 }
 
 View.prototype = {
@@ -195,6 +202,7 @@ View.prototype = {
 			style = this._mapa.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());			
 			polygon.setStyle(style);
 			this._mapa.addFeature(polygon);
+			this._elements.modalAutomatic['this'].modal('hide');
 		} else {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, false);
 		}
@@ -278,6 +286,8 @@ View.prototype = {
 			$('#formSalvar #formModalSalvar input[name="codigo"]').val(feature.get('id'));
 			$('#formSalvar #formModalSalvar input[name="descricao"]').val(feature.get('name'));
 			$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);
+			$('#formSalvar #formModalSalvar input[name="usuario"]').val(_this._usuario.getId());
+			$('#formSalvar #formModalSalvar input[name="local"]').val(_this._local.getId());
 			
 			_this._elements.modalSalvar.btnSave.on('click', function() {
 				values = {};
@@ -294,16 +304,18 @@ View.prototype = {
 						if (field.value === undefined || field.value === "") {
 							containErro.erroCampos.show();
 							erroEnc = true;
-					}
-					values['descricao'] = field.value;
-					} else {
+						}
+						values['descricao'] = field.value;
+					} else if(field.name.indexOf("coordenadas") === 0) {
 						values['locale'] = field.value;
+					} else if(field.name.indexOf("local") === 0) {
+						values['local'] = field.value;
+					} else if(field.name.indexOf("local") === 0) {
+						
 					}
 				});
 				if (!erroEnc) {
 					_this.salvar.notify({ index : event.target.selectedIndex, area: values });
-//					model.salvarArea(values, function() {}, function() {}, function(){});
-//					ajaxEnviarPost(url, values, modal);
 				}
 			});
 		});

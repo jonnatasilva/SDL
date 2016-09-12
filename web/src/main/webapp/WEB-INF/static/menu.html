@@ -24,6 +24,7 @@
 							class="arrow"></span></a></li>
 					<ul class="sub-menu collapse" id="service">
 						<li class="btnModify">Modify</li>
+						<li class="btnVisuDetal">Visualizar Detalhes</li>
 					</ul>
 
 
@@ -39,8 +40,15 @@
 
 					<li><a href="#"> <i class="	fa fa-question"></i> Help
 					</a></li>
-
-					<span id="usuario"> </span>
+					<div class="menuMaisOpt">
+						<span id="usuario"> </span>
+						</span><select class="form-control" id="buscaArea" style="width: 200px">
+							<option value="" selected>Buscar Area</option>
+							<c:forEach items="${local['areasLocal']}" var="area">
+								<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
+							</c:forEach>
+						</select>
+					</div>
 				</ul>
 			</div>
 		</div>

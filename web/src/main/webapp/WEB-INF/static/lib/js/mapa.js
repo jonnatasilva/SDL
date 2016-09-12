@@ -1,10 +1,13 @@
 function Mapa() {
-	var map = null;
-	var source = null;
-	var selectSingleClick = null;
+	var map;
+	var draw;
+	var source;
+	var selectSingleClick;
+	var modify;
 	var _this = this;
 	
 	this.openFormSave = new Event(this);
+	
 }
 
 Mapa.prototype = {
@@ -16,20 +19,10 @@ Mapa.prototype = {
 		// thing.transform('EPSG:4326', 'EPSG:3857');
 		var feature = new ol.Feature({
 			id : codigo,
-			name : 'foo',
+			name : descricao,
 			geometry : thing
 		});
 		return feature;
-	},
-	getDrawInteraction : function() {
-		var value = 'Polygon';
-		var draw;
-		draw = new ol.interaction.Draw({
-			source : this.source,
-			type : /** @type {ol.geom.GeometryType} */
-			(value)
-		});
-		return draw;
 	},
 	getSelectSingleClick : function() {
 		return this.selectSingleClick;
@@ -37,10 +30,26 @@ Mapa.prototype = {
 	addInteraction : function(interaction) {
 		this.map.addInteraction(interaction);
 	},
-	removeInteraction : function(interaction) {
-		this.map.removeInteraction(interaction);
+	removeInteractions : function() {
+		this.map.removeInteraction(this.draw);
+		this.map.removeInteraction(this.modify);
+	},
+	addDrawInteraction : function() {
+		this.removeInteractions();
+		this.map.removeInteraction(this.selectSingleClick);
+		this.map.addInteraction(this.draw);
+	},
+	addSelectSingleClickInteraction : function() {
+		this.removeInteractions();
+		this.map.addInteraction(this.selectSingleClick);
+	},
+	addModifyInteraction : function() {
+		this.removeInteractions();
+		this.map.removeInteraction(this.selectSingleClick);
+		this.map.addInteraction(this.modify);
 	},
 	defineStyle: function(backgroundColor, borderColor) {
+		source = this.source;
 		style = new ol.style.Style({
 			fill : new ol.style.Fill({
 				color : backgroundColor
@@ -57,7 +66,7 @@ Mapa.prototype = {
 			}),
 			text : new ol.style.Text({
 				font : '12px helvetica,sans-serif',
-				text : this._mapa.source.Feature,
+				text : source.Feature,
 				rotation : 360 * Math.PI / 180,
 				fill : new ol.style.Fill({
 					color : '#000'
@@ -108,7 +117,7 @@ Mapa.prototype = {
 		});
 		
 		var vector = new ol.layer.Vector({
-			source : this.source,
+			source : _this.source,
 			style : new ol.style.Style({
 				fill : new ol.style.Fill({
 					color : 'rgba(255, 255, 255, 0.6)'
@@ -142,34 +151,47 @@ Mapa.prototype = {
 	        wrapX: false
 	    });
 		
-		var modify = new ol.interaction.Modify({
+		this.modify = new ol.interaction.Modify({
 	        features: select.getFeatures()
 	    });
+		this.modify.on('modifyend',function(e){
+			console.log(e.features.getArray()[0].get('name'));
+			coords = e.features.getArray()[0].getGeometry().getCoordinates();
+			_this.openFormSave.notify({ coords : coords, feature : e.features.getArray()[0]});
+		});
 
 		this.map = new ol.Map({
-			interactions: ol.interaction.defaults().extend([select, modify]),
+			interactions: ol.interaction.defaults().extend([select]),
+//			new olgm.layer.Google(), 
 			layers : [ raster, vector ],
 			target : 'map',
-			projection: 'EPSG:4326',
+			projection: new ol.proj.Projection('EPSG:4326'),
 			view : new ol.View({
 				center : ol.proj.fromLonLat([0, 0]),
 				zoom : 15
 			})
 		});
 		
+		
 		if(this.source.getFeatures().length > 0 ) {
 			this.map.getView().fit(this.source.getExtent(), this.map.getSize());
 		}
-
-		var popup = new ol.Overlay.Popup;
+		
+		var value = 'Polygon';
+		this.draw = new ol.interaction.Draw({
+			source : this.source,
+			type : /** @type {ol.geom.GeometryType} */
+			(value)
+		});		
+		var popup = new ol.Overlay.Popup();
 		popup.setOffset([ 0, -55 ]);
 		
 		this.map.addOverlay(popup);
-		this.map.on('singleclick', function(evt) {
-			var feature = _this.map.forEachFeatureAtPixel(evt.pixel, function(feature,
-					layer) {
-			})
-		});
+//		this.map.on('singleclick', function(evt) {
+//			var feature = _this.map.forEachFeatureAtPixel(evt.pixel, function(feature,
+//					layer) {
+//			})
+//		});
 		
 		this.map.addInteraction(this.selectSingleClick);
 		this.selectSingleClick.on('select', function(e) {
@@ -178,7 +200,9 @@ Mapa.prototype = {
 			if (lenSele == 1) {
 				var infoArea = e.selected[0].get('name');
 				var content = '<div class="divPopup"><p>' + infoArea + '</p></div>';
-						popup.show(e.selected[0].getGeometry().getExtent(), content);
+				popup.show(e.selected[0].getGeometry().getExtent(), content);
+				coords = e.selected[0].getGeometry().getCoordinates();
+				_this.openFormSave.notify({ coords : coords, feature : e.selected[0]});
 			} else if (lenDese == 1) {
 				popup.hide();
 			}
@@ -186,7 +210,13 @@ Mapa.prototype = {
 		_this.map.on('click', function(evt) {
 			 console.log(evt.coordinate);
 		 });
-
+//		var olGM = new olgm.OLGoogleMaps({
+//			map: _this.map,
+//			mapIconOptions: {
+//			useCanvas: true
+//		}});
+//		olGM.activate();
+//	
 		// $('.btnDelete').on('click', function(){
 		// var features = source.getFeatures();
 		// for(f in features) {
@@ -206,6 +236,7 @@ Mapa.prototype = {
 			features.push({
 				'type' : 'Feature',
 				'properties' : {
+					'id' : data[i]['codigo'],
 					'name' : data[i]['codigo'] + ' - ' + data[i]['descricao'],
 				},
 				'geometry' : {
@@ -226,5 +257,21 @@ Mapa.prototype = {
 			'features' : features
 		};
 		return geojsonObject;
+	},
+	buscarArea : function(codArea) {
+		var source;
+		if(codArea != undefined && codArea != '') {
+			this.source.forEachFeature(function(feature) {
+				if(feature.get('id') === codArea) {
+					source = new ol.source.Vector({
+						features : [feature],
+						wrapX : false
+					});
+				}
+			});
+		} else {
+			source = this.source;
+		}
+		this.map.getView().fit(source.getExtent(), this.map.getSize());
 	}
 }

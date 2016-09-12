@@ -9,13 +9,14 @@
 	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol-popup.js"/>'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/filestyle/jquery-filestyle.js"/>'></script>
-	
+<!-- 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
+<%-- 	<script type="text/javascript" src='<c:url value="/static/lib/ol3-google-maps-v0.11.0/ol3gm.js"/>'></script>	 --%>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/mapa.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/model.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/view.js"/>'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/controller.js"/>'></script>
 	
-	<script type="text/javascript" src='<c:url value="/static/lib/js/script.js"/>'></script>
+<%-- 	<script type="text/javascript" src='<c:url value="/static/lib/js/script.js"/>'></script> --%>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/menu.js"/>'></script>
 
 	<!-- importação de css -->
@@ -24,6 +25,7 @@
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/filestyle/jquery-filestyle.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/css/style.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/css/menu.css"/>'>
+<%-- 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/ol3-google-maps-v0.11.0/ol3gm.css"/>'/> --%>
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title></title>
@@ -72,7 +74,9 @@
 				'paintManual' : $('.btnPintar'),
 				'painelPrerando' : $('#preparando'),
 				'usuario' : $('#usuario'),
-				'modalAutomatic' : {
+				'buscarArea' : $('#buscaArea'),
+				'visualizarDeta' : $('.btnVisuDetal'),
+ 				'modalAutomatic' : {
 					'this' : $('#btnModal'),
 					'verticeAdd': $('#btnModal #btnAddVert'),
 					'next' : $('#savePaint'),
@@ -98,11 +102,12 @@
 						'falhaSalvar' : $('#formSalvar .plusInfo .falha'),
 					},
 					'btnSave' : $('#formSalvar #save')
-				} 
+				}
 			}, usuario, local);
 			var controller = new Controller(model, view);
 			view.show();
 		});
 	</script>
+	
 </body>
 </html>
