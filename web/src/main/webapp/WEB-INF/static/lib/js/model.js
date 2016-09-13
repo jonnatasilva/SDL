@@ -8,7 +8,7 @@ function Model() {
 
 Model.prototype = {
 	listAreas : function(idLocal, callbackSucesso, callbackErro, callbackAlways) {
-		$.getJSON(this.base + 'listJSON', {
+		$.getJSON(this.base + 'list/json', {
 			idLocal : 1
 		}).done(function(data) {
 			callbackSucesso(data);
@@ -29,7 +29,7 @@ Model.prototype = {
 	},
 	parseKML: function(formData, callbackSucesso, callbackErro, callbackAlways) {
 		jQuery.ajax({
-		    url: this.base +  'parseKML',
+		    url: this.base +  'parse/kml',
 		    data: formData,
 		    cache: false,
 		    contentType: false,

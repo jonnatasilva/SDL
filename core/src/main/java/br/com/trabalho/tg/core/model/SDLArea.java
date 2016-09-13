@@ -10,8 +10,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import org.geolatte.geom.Geometry;
-import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 
 import lombok.Data;
@@ -36,10 +34,6 @@ public class SDLArea {
 	
 	@Column(name="locale", nullable=false)
 	private byte[] locale;
-	
-	@Type(type="org.hibernate.spatial.GeometryType")
-	@Column(name="locale_geometry")
-	private Geometry localeGeometry;
 	
 	@Column(name="background_color", nullable=true)
 	private String backgroundColor;

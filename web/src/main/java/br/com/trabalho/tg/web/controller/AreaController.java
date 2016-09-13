@@ -83,9 +83,7 @@ public class AreaController extends ExceptionHandling {
 		String arrayString = json.getString("locale");
 		area.setIdLocal(json.getLong("local"));
 		area.setLocale(arrayString.getBytes());
-		System.out.println(json);
 		area = service.saveArea(area);
-		System.out.println("Id Area: " + area.getId());
 		historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area.getId()));
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
@@ -100,15 +98,16 @@ public class AreaController extends ExceptionHandling {
 		return new ResponseEntity<Object>(areas, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/listJSON", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/list/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	private @ResponseBody List<SDLArea> listAreas() throws Exception {
 		List<SDLArea> areas = new ArrayList<SDLArea>();
 		areas = service.getAreasByLocal(0);
+		areas.get(100);
 		return areas;
 	}
 
-	@RequestMapping(value = "/parseKML", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/parse/kml", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	private @ResponseBody String parseKML(@RequestParam("kml") MultipartFile file) throws Exception {
 		JSONObject obj = null;
