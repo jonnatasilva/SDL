@@ -103,7 +103,6 @@ public class AreaController extends ExceptionHandling {
 	private @ResponseBody List<SDLArea> listAreas() throws Exception {
 		List<SDLArea> areas = new ArrayList<SDLArea>();
 		areas = service.getAreasByLocal(0);
-		areas.get(100);
 		return areas;
 	}
 

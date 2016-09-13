@@ -4,11 +4,13 @@
 <html>
 <head>
 	<script type="text/javascript" src='<c:url value="/static/lib/min/jquery.min.js" /> '></script>
+	<script type="text/javascript" src='<c:url value="/static/lib/jquery.toaster.js" /> '></script>
 	
 	<script type="text/javascript" src='<c:url value="/static/lib/bootstrap-3.3.6/js/bootstrap.min.js" />' ></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol-popup.js"/>'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/filestyle/jquery-filestyle.js"/>'></script>
+	
 <!-- 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
 <%-- 	<script type="text/javascript" src='<c:url value="/static/lib/ol3-google-maps-v0.11.0/ol3gm.js"/>'></script>	 --%>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/mapa.js" />'></script>
