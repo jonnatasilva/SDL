@@ -167,14 +167,14 @@ Mapa.prototype = {
 			projection: new ol.proj.Projection('EPSG:4326'),
 			view : new ol.View({
 				center : ol.proj.fromLonLat([0, 0]),
-				zoom : 15
+				zoom : 4
 			})
 		});
 		
 		
-		if(this.source.getFeatures().length > 0 ) {
-			this.map.getView().fit(this.source.getExtent(), this.map.getSize());
-		}
+//		if(this.source.getFeatures().length > 0 ) {
+//			this.map.getView().fit(this.source.getExtent(), this.map.getSize());
+//		}
 		
 		var value = 'Polygon';
 		this.draw = new ol.interaction.Draw({

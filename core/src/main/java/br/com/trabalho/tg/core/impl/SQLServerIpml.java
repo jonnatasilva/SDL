@@ -1,5 +1,6 @@
 package br.com.trabalho.tg.core.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +29,15 @@ public class SQLServerIpml implements AreaDB {
 		List<SDLArea> areas = areaDAO.findByIdLocal((long) 1);
 		return this.findIntersects(areas, point);
 	}
-
 	public ArrayList<String> findIntersects(List<SDLArea> areas, String point) {
 		ArrayList<String> result = new ArrayList<String>();
 		for(SDLArea a : areas) {
 			StringBuffer sb = new StringBuffer("select geometry::STPolyFromText('POLYGON ((");
-			sb.append(a.getLocaleObj());
+			sb.append("-4862617.991389773 -931308.7526265874, -5180596.029056106 -1201590.0846429705, -4551977.908438817 -1128210.5374892014, -4857726.021579522 -945984.6620573412, -4862617.991389773 -931308.7526265874");
 			sb.append("))', 0).STIntersects(geometry::STPointFromText('POINT (");
 			sb.append(point);
-			sb.append(")', 0)) ");
-			Query query = (Query) this.manager.createQuery(sb.toString());
+			sb.append(")', 0)) as geom");
+			Query query = (Query) this.manager.createQuery(sb.toString(), Integer.class);
 			
 			if(String.valueOf(query.getSingleResult()).equals("1")) {
 				result.add(a.getCodigo());

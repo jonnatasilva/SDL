@@ -17,15 +17,15 @@
 		transaction-manager-ref="sdlTransactionManager"
 		entity-manager-factory-ref="sdlEntityManagerFactory" />
 
-	<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/bancoSDL" />
-		<property name="resourceRef" value="true" />
-	</bean>
+<!-- 	<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 		<property name="jndiName" value="java:comp/env/bancoSDL" /> -->
+<!-- 		<property name="resourceRef" value="true" /> -->
+<!-- 	</bean> -->
 	
-<!-- 		<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
-<!-- 			<property name="jndiName" value="java:comp/env/bancoSDLSqlServer" /> -->
-<!-- 			<property name="resourceRef" value="true" /> -->
-<!-- 		</bean> -->
+		<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:comp/env/bancoSDLSqlServer" />
+			<property name="resourceRef" value="true" />
+		</bean>
 	
 
 	<!-- Datasource <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
@@ -38,6 +38,7 @@
 		p:packagesToScan="br.com.trabalho.tg" p:dataSource-ref="sdlDataSource">
 		<property name="jpaProperties">
 			<props>
+<!-- 				<prop key="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</prop> -->
 				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
 				<prop key="hibernate.connection.charSet">UTF-8</prop>
 				<prop key="hibernate.cache.use_query_cache">false</prop>
@@ -50,8 +51,8 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="false" />
 				<property name="generateDdl" value="true" />
-				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
-<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.SQLServerDialect"/> -->
+<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/> -->
+				<property name="databasePlatform" value="org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect"/>
 			</bean>
 		</property>
 	</bean>

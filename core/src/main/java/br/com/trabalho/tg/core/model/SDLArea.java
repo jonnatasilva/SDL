@@ -7,12 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.Data;
 
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+
 
 @Entity
 @Data
@@ -35,6 +39,10 @@ public class SDLArea {
 	@Column(name="locale", nullable=false)
 	protected byte[] locale;
 	
+	@Type(type="org.hibernate.spatial.GeometryType")
+	@Column(name="location_geometry")
+    private Geometry location;
+	
 	@Column(name="background_color", nullable=true)
 	private String backgroundColor;
 	
@@ -43,12 +51,10 @@ public class SDLArea {
 	
 	@Column(name="id_local", nullable=true)
 	protected Long idLocal;
-	
-	@Transient
-	private Object[] localeObj;
 
 	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
 		String str = new String(this.locale, "UTF-8");
 		return new JSONArray("[" + str + "]");
 	}
+
 }	

@@ -25,8 +25,8 @@ public class AreaService {
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED)
-	public List<SDLArea> getAreasByLocal(long idLocal) throws Exception {
-		return dao.findAll();
+	public List<Object[]> getAreasByLocal(long idLocal) throws Exception {
+		return dao.findWithOutLocationByIdLocal(idLocal);
 	}
 
 }
