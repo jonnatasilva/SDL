@@ -87,8 +87,7 @@ public class AreaController extends ExceptionHandling {
 		String arrayString = json.getString("locale");
 		area.setIdLocal(json.getLong("local"));
 		area.setLocale(arrayString.getBytes());
-		GeometryUtils.arrayToPolygon(area.getLocaleArray());
-		area.setLocation(wktToGeometry("LINESTRING (30 10, 10 30, 40 40)"));
+		area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
 		service.saveArea(area);
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
@@ -148,10 +147,10 @@ public class AreaController extends ExceptionHandling {
 		return obj.toString();
 	}
 	
-	@RequestMapping(value = "/teste/SQLServer/intersect", method = RequestMethod.GET)
-	public @ResponseBody String testeIntersect(@RequestParam("lat") Long latitude, @RequestParam("long") Long longitude) {
+	@RequestMapping(value = "/teste/SQLServer/intersect", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public @ResponseBody JSONArray testeIntersect(@RequestParam("lat") Long latitude, @RequestParam("long") Long longitude) {
 		try {
-//			impl.findIntersects(service.getAreasByLocal(1), "1 2");
+			return impl.findIntersects("1 2");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

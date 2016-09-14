@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Geometry;
 		@UniqueConstraint(columnNames={"codigo", "id_local"})
 })
 
-public class SDLArea {
+public class SDLArea implements Comparable<SDLArea>{
 	
 	@Id
 	@GeneratedValue
@@ -40,7 +40,7 @@ public class SDLArea {
 	protected byte[] locale;
 	
 	@Type(type="org.hibernate.spatial.GeometryType")
-	@Column(name="location_geometry")
+	@Column(name="location_geometry", columnDefinition="Geometry")
     private Geometry location;
 	
 	@Column(name="background_color", nullable=true)
@@ -55,6 +55,13 @@ public class SDLArea {
 	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
 		String str = new String(this.locale, "UTF-8");
 		return new JSONArray("[" + str + "]");
+	}
+
+	public int compareTo(SDLArea o) {
+		if(this.location.getArea() > o.getLocation().getArea()) {
+			return -1;
+		}
+		return 1;
 	}
 
 }	
