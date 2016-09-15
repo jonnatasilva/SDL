@@ -51,10 +51,11 @@ public class AreaController extends ExceptionHandling {
 	private String prefixoPadrao = "redirect:/static";
 
 	/*
-	 * Met�do request ir� retornar a p�gina default para a manipula��o das
+	 * Met�do request irá retornar a p�gina default para a manipulação das
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	private ModelAndView iniciar() throws Exception {
+
 //		impl.findByLocation(null, null);
 		List<AreaLocal> areas = new ArrayList<AreaLocal>();
 		for(Integer i = 1; i <= 3; i++) {

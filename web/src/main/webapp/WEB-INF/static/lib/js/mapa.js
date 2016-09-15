@@ -87,7 +87,7 @@ Mapa.prototype = {
 			// source : new ol.source.MapQuest({
 			// layer : 'sat'
 			// }),
-			source : new ol.source.OSM()
+			source : new ol.source.OSM("Mapa")
 		});
 		
 		this.source = new ol.source.Vector({
@@ -100,7 +100,12 @@ Mapa.prototype = {
 		this.source.on('addfeature', function(evt) {
 			var feature = evt.feature;
 			var coords = feature.getGeometry().getCoordinates();
-			_this.openFormSave.notify({ coords : coords, feature : feature});
+			coordsAux = [];
+			for(var c = 0; c < coords[0].length; c++) {
+				coordsAux.push(ol.proj.transform(coords[0][c], 'EPSG:3857', 'EPSG:4326'));
+			}
+			
+			_this.openFormSave.notify({ coordsAux : coords, feature : feature});
 //			openForm(tranformToObj(coords), feature.get('id'), feature.get('name'));
 		});
 		
@@ -164,10 +169,10 @@ Mapa.prototype = {
 //			new olgm.layer.Google(), 
 			layers : [ raster, vector ],
 			target : 'map',
-			projection: new ol.proj.Projection('EPSG:4326'),
+			projection: new ol.proj.Projection('EPSG:3857'),
 			view : new ol.View({
-				center : ol.proj.fromLonLat([0, 0]),
-				zoom : 4
+				center : ol.proj.fromLonLat([-45.8944950663676, -23.198074855969935], 'EPSG:3857'),
+				zoom : 15
 			})
 		});
 		
@@ -207,7 +212,7 @@ Mapa.prototype = {
 			}
 		});
 		_this.map.on('click', function(evt) {
-			 console.log(evt.coordinate);
+			 console.log(ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326'));
 		 });
 //		var olGM = new olgm.OLGoogleMaps({
 //			map: _this.map,
