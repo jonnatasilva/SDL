@@ -100,12 +100,8 @@ Mapa.prototype = {
 		this.source.on('addfeature', function(evt) {
 			var feature = evt.feature;
 			var coords = feature.getGeometry().getCoordinates();
-			coordsAux = [];
-			for(var c = 0; c < coords[0].length; c++) {
-				coordsAux.push(ol.proj.transform(coords[0][c], 'EPSG:3857', 'EPSG:4326'));
-			}
 			
-			_this.openFormSave.notify({ coordsAux : coords, feature : feature});
+			_this.openFormSave.notify({ coords : coords, feature : feature});
 //			openForm(tranformToObj(coords), feature.get('id'), feature.get('name'));
 		});
 		
@@ -169,9 +165,9 @@ Mapa.prototype = {
 //			new olgm.layer.Google(), 
 			layers : [ raster, vector ],
 			target : 'map',
-			projection: new ol.proj.Projection('EPSG:3857'),
 			view : new ol.View({
-				center : ol.proj.fromLonLat([-45.8944950663676, -23.198074855969935], 'EPSG:3857'),
+				projection: 'EPSG:4326',
+				center : [-45.8944950663676, -23.198074855969935],
 				zoom : 15
 			})
 		});
@@ -245,7 +241,7 @@ Mapa.prototype = {
 				},
 				'geometry' : {
 					'type' : 'Polygon',
-					'coordinates' : [ x ]
+					'coordinates' : [ x]
 				},
 //				'style': this.defineStyle(data[i]['backgroundColor'], data[i]['borderColor'])
 			});
@@ -254,9 +250,6 @@ Mapa.prototype = {
 			'type' : 'FeatureCollection',
 			'crs' : {
 				'type' : 'name',
-				'properties' : {
-					'name' : 'EPSG:3857'
-				}
 			},
 			'features' : features
 		};
