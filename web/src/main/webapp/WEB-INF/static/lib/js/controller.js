@@ -13,7 +13,9 @@ function Controller(model, view) {
     	_this._model.parseKML(formData, function(data) {
     		_this._view.exibeImportKML(data);
     	}, function() {
+    		$.toaster({ priority : 'danger', title : 'Erro', message : 'Falha ao carregar arquivo!'});
     	}, function() {
+   
     	});
     });
     this._view.parseTXT.attach(function (sender, args) {
@@ -26,10 +28,12 @@ function Controller(model, view) {
     	});
     });
     this._view.salvar.attach(function(sender, args) {
+    	
     	_this._model.salvarArea(args.area, function() {
     		_this._view._elements.modalSalvar['this'].modal('hide');
+    		$.toaster({ priority : 'success', title : 'Sucesso', message : 'Salvo com sucesso!'});
     	}, function() {
-    		alert();
+    		$.toaster({ priority : 'danger', title : 'Erro', message : 'Falha ao salvar!'});
     	}, function() {
     		
     	})

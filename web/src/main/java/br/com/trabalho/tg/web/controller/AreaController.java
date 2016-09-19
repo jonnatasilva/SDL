@@ -18,20 +18,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.trabalho.tg.core.handling.ExceptionHandling;
-import br.com.trabalho.tg.core.impl.SQLServerIpml;
+import br.com.trabalho.tg.core.impl.AreaDBIpml;
 import br.com.trabalho.tg.core.mock.UsuarioMock;
 import br.com.trabalho.tg.core.model.AreaLocal;
+import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
 import br.com.trabalho.tg.core.service.AreaService;
+import br.com.trabalho.tg.core.service.HistoricoAreaService;
 import br.com.trabalho.tg.web.enums.MapeamentoEnum;
 import br.com.trabalho.tg.web.utils.GeometryUtils;
 import br.com.trabalho.tg.web.utils.KmlUtils;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -50,15 +49,19 @@ public class AreaController extends ExceptionHandling {
 	AreaService service;
 	
 	@Autowired
-	SQLServerIpml impl;
+	HistoricoAreaService historicoService;
+	
+	@Autowired
+	AreaDBIpml impl;
 
 	private String prefixoPadrao = "redirect:/static";
 
 	/*
-	 * Met�do request ir� retornar a p�gina default para a manipula��o das
+	 * Met�do request irá retornar a p�gina default para a manipulação das
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	private ModelAndView iniciar() throws Exception {
+
 //		impl.findByLocation(null, null);
 		List<AreaLocal> areas = new ArrayList<AreaLocal>();
 		for(Integer i = 1; i <= 3; i++) {
@@ -88,8 +91,9 @@ public class AreaController extends ExceptionHandling {
 		area.setIdLocal(json.getLong("local"));
 		area.setLocale(arrayString.getBytes());
 		area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
-		service.saveArea(area);
 
+		area = service.saveArea(area);
+		historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area.getId()));
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 	
@@ -104,21 +108,12 @@ public class AreaController extends ExceptionHandling {
         return geom;
     }
 
-	@RequestMapping(value = "/list", params = { "idLocal" }, method = RequestMethod.GET)
+	@RequestMapping(value = "/list/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	private ResponseEntity<Object> listAreas(
-			@RequestParam("idLocal") Long idLocal) throws Exception {
-		List<SDLArea> areas = new ArrayList<SDLArea>();
-//		areas = service.getAreasByLocal(idLocal);
-		return new ResponseEntity<Object>(areas, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/listJSON", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	@ResponseStatus(HttpStatus.OK)
-	private @ResponseBody List<SDLArea> listAreas() throws Exception {
+	private @ResponseBody List<SDLArea> listAreas(@RequestParam("idLocal") long idLocal) throws Exception {
 		List<SDLArea> areas = new ArrayList<SDLArea>();
 		List<Object[]> areasAux = new ArrayList<Object[]>();
-		areasAux = service.getAreasByLocal(1);
+		areasAux = service.getAreasByLocal(idLocal);
 		if(areasAux != null) {
 			for(Object[] a : areasAux) {
 				SDLArea areaAux = new SDLArea();
@@ -135,7 +130,7 @@ public class AreaController extends ExceptionHandling {
 		return areas;
 	}
 
-	@RequestMapping(value = "/parseKML", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/parse/kml", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	private @ResponseBody String parseKML(@RequestParam("kml") MultipartFile file) throws Exception {
 		JSONObject obj = null;
@@ -148,9 +143,10 @@ public class AreaController extends ExceptionHandling {
 	}
 	
 	@RequestMapping(value = "/teste/SQLServer/intersect", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	public @ResponseBody JSONArray testeIntersect(@RequestParam("lat") Long latitude, @RequestParam("long") Long longitude) {
+	public @ResponseBody JSONArray testeIntersect(@RequestParam("lat") String latitude, @RequestParam("long") String longitude) {
 		try {
-			return impl.findIntersects("1 2");
+			System.out.println(latitude);
+			return impl.findIntersectionByLocal((long) 1, latitude + " " + longitude);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

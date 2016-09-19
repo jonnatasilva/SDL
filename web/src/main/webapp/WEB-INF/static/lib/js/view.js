@@ -294,24 +294,31 @@ View.prototype = {
 				var $form = _this._elements.modalSalvar.formModal;
 				var erroEnc = false;
 				$.each($form.serializeArray(), function(i, field) {
-					if (field.name.indexOf("codigo") === 0) {
-						if (field.value === undefined || field.value === "") {
-							containErro.erroCampos.show();
-							erroEnc = true;
+					console.log(field.value.codigo);
+					if (field.name.indexOf("area") === 0) {
+						
+//						if (field.value === undefined || field.value === "") {
+//							containErro.erroCampos.show();
+//							erroEnc = true;
+//						}
+						for(var i = 0; i < areas.length; i++) {
+							if(areas[i].codigo === field.value) {
+								values['codigo'] = areas[i].codigo;
+								values['descricao'] = areas[i].descricao;
+								break;
+							}
 						}
-						values['codigo'] = field.value;
 					} else if (field.name.indexOf("descricao") === 0) {
 						if (field.value === undefined || field.value === "") {
 							containErro.erroCampos.show();
 							erroEnc = true;
 						}
-						values['descricao'] = field.value;
 					} else if(field.name.indexOf("coordenadas") === 0) {
 						values['locale'] = field.value;
 					} else if(field.name.indexOf("local") === 0) {
 						values['local'] = field.value;
-					} else if(field.name.indexOf("local") === 0) {
-						
+					} else if(field.name.indexOf("usuario") === 0) {
+						values['usuario'] = field.value;
 					}
 				});
 				if (!erroEnc) {

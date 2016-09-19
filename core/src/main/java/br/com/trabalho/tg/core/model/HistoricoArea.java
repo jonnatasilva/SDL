@@ -17,6 +17,13 @@ import lombok.Data;
 @Table(name="historico_area")
 public class HistoricoArea {
 	
+	public HistoricoArea(byte[] locale, Long idUsuario, Long idArea) {
+		this.dataAlteracao = new Date();
+		this.locale = locale;
+		this.idUsuario = idUsuario;
+		this.idArea = idArea;
+	}
+	
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -25,9 +32,12 @@ public class HistoricoArea {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
 	
-	@Column(name="local_antes", nullable=true)
-	private byte[] localeAntes;
+	@Column(name="locale", nullable=true)
+	private byte[] locale;
 	
 	@Column(name="id_usuario", nullable=false)
-	private String idUsuario;
+	private Long idUsuario;
+	
+	@Column(name="id_area", nullable=false)
+	private Long idArea;
 }

@@ -4,10 +4,11 @@ function Mapa() {
 	var source;
 	var selectSingleClick;
 	var modify;
+	var popup;
 	var _this = this;
-	
+
 	this.openFormSave = new Event(this);
-	
+
 }
 
 Mapa.prototype = {
@@ -33,6 +34,7 @@ Mapa.prototype = {
 	removeInteractions : function() {
 		this.map.removeInteraction(this.draw);
 		this.map.removeInteraction(this.modify);
+		this.popup.hide();
 	},
 	addDrawInteraction : function() {
 		this.removeInteractions();
@@ -48,7 +50,7 @@ Mapa.prototype = {
 		this.map.removeInteraction(this.selectSingleClick);
 		this.map.addInteraction(this.modify);
 	},
-	defineStyle: function(backgroundColor, borderColor) {
+	defineStyle : function(backgroundColor, borderColor) {
 		source = this.source;
 		style = new ol.style.Style({
 			fill : new ol.style.Fill({
@@ -81,29 +83,19 @@ Mapa.prototype = {
 	},
 	buildMapa : function(geojsonObject) {
 		var _this = this;
-		geojsonObject = this.carregaGeoJsonObject(geojsonObject);
-		
+
 		var raster = new ol.layer.Tile({
-			// source : new ol.source.MapQuest({
-			// layer : 'sat'
-			// }),
-			source : new ol.source.OSM()
+			source : new ol.source.OSM("Mapa")
 		});
-		
-		this.source = new ol.source.Vector({
-			features : (new ol.format.GeoJSON()).readFeatures(geojsonObject),
-			wrapX : false
-		});
-		
+
+		this.source = this.vector(geojsonObject);
+
 		// Adicionar evento que irá executar, quando
 		// terminar de desenha polygon
 		this.source.on('addfeature', function(evt) {
-			var feature = evt.feature;
-			var coords = feature.getGeometry().getCoordinates();
-			_this.openFormSave.notify({ coords : coords, feature : feature});
-//			openForm(tranformToObj(coords), feature.get('id'), feature.get('name'));
+			_this.notifyAddFeature(evt.feature);
 		});
-		
+
 		this.selectSingleClick = new ol.interaction.Select({
 			style : new ol.style.Style({
 				stroke : new ol.style.Stroke({
@@ -115,117 +107,60 @@ Mapa.prototype = {
 				return true;
 			}
 		});
-		
+
 		var vector = new ol.layer.Vector({
 			source : _this.source,
-			style : new ol.style.Style({
-				fill : new ol.style.Fill({
-					color : 'rgba(255, 255, 255, 0.6)'
-				}),
-				stroke : new ol.style.Stroke({
-					color : '#319FD3',
-					width : 1
-				}),
-				image : new ol.style.Circle({
-					radius : 7,
-					fill : new ol.style.Fill({
-						color : '#ffcc33'
-					})
-				}),
-				text : new ol.style.Text({
-					font : '12px helvetica,sans-serif',
-					text : this.source.Feature,
-					rotation : 360 * Math.PI / 180,
-					fill : new ol.style.Fill({
-						color : '#000'
-					}),
-					stroke : new ol.style.Stroke({
-						color : '#fff',
-						width : 1
-					})
-				})
-			})
+			style : _this.defineStyle('rgba(255, 255, 255, 0.6)', '#319FD3') 
+		});
+
+		var select = new ol.interaction.Select({
+			wrapX : false
+		});
+
+		this.modify = new ol.interaction.Modify({
+			features : select.getFeatures()
 		});
 		
-		var select = new ol.interaction.Select({
-	        wrapX: false
-	    });
-		
-		this.modify = new ol.interaction.Modify({
-	        features: select.getFeatures()
-	    });
-		this.modify.on('modifyend',function(e){
-			coords = e.features.getArray()[0].getGeometry().getCoordinates();
-			_this.openFormSave.notify({ coords : coords, feature : e.features.getArray()[0]});
+		this.modify.on('modifyend', function(e) {
+			_this.notifyAddFeature(e.features.getArray()[0]);
 		});
 
 		this.map = new ol.Map({
-			interactions: ol.interaction.defaults().extend([select]),
-//			new olgm.layer.Google(), 
+			interactions : ol.interaction.defaults().extend([ select ]),
 			layers : [ raster, vector ],
 			target : 'map',
-			projection: new ol.proj.Projection('EPSG:4326'),
 			view : new ol.View({
-				center : ol.proj.fromLonLat([0, 0]),
-				zoom : 4
+				projection : 'EPSG:4326',
+				center : [-45.8944950663676, -23.198074855969935],
+				zoom : 15
 			})
 		});
-		
-		
+
 //		if(this.source.getFeatures().length > 0 ) {
-//			this.map.getView().fit(this.source.getExtent(), this.map.getSize());
-//		}
-		
+//			 this.map.getView().fit(this.source.getExtent(), this.map.getSize());
+//		 }
+
 		var value = 'Polygon';
 		this.draw = new ol.interaction.Draw({
 			source : this.source,
 			type : /** @type {ol.geom.GeometryType} */
 			(value)
-		});		
-		var popup = new ol.Overlay.Popup();
-		popup.setOffset([ 0, -55 ]);
+		});
 		
-		this.map.addOverlay(popup);
-//		this.map.on('singleclick', function(evt) {
-//			var feature = _this.map.forEachFeatureAtPixel(evt.pixel, function(feature,
-//					layer) {
-//			})
-//		});
-		
+		this.popup = new ol.Overlay.Popup();
+		this.popup.setOffset([ 0, -55 ]);
+
+		this.map.addOverlay(this.popup);
+
 		this.map.addInteraction(this.selectSingleClick);
 		this.selectSingleClick.on('select', function(e) {
-			var lenSele = e.selected.length;
-			var lenDese = e.deselected.length;
-			if (lenSele == 1) {
-				var infoArea = e.selected[0].get('name');
-				var content = '<div class="divPopup"><p>' + infoArea + '</p></div>';
-				popup.show(e.selected[0].getGeometry().getExtent(), content);
-				coords = e.selected[0].getGeometry().getCoordinates();
-				_this.openFormSave.notify({ coords : coords, feature : e.selected[0]});
-			} else if (lenDese == 1) {
-				popup.hide();
-			}
+			_this.buildPopup(e.selected.length, e.deselected.length, e.selected[0]);
+			
 		});
+		
 		_this.map.on('click', function(evt) {
-			 console.log(evt.coordinate);
-		 });
-//		var olGM = new olgm.OLGoogleMaps({
-//			map: _this.map,
-//			mapIconOptions: {
-//			useCanvas: true
-//		}});
-//		olGM.activate();
-//	
-		// $('.btnDelete').on('click', function(){
-		// var features = source.getFeatures();
-		// for(f in features) {
-		// if(features[f].get('name') === feature) {
-		// source.removeFeature(features[f]);
-		// popup.hide();
-		// break;
-		// }
-		// }
-		// });
+			console.log(evt.coordinate);
+		});
 	},
 	carregaGeoJsonObject : function(data) {
 		var features = [];
@@ -242,16 +177,14 @@ Mapa.prototype = {
 					'type' : 'Polygon',
 					'coordinates' : [ x ]
 				},
-//				'style': this.defineStyle(data[i]['backgroundColor'], data[i]['borderColor'])
+			// 'style': this.defineStyle(data[i]['backgroundColor'],
+			// data[i]['borderColor'])
 			});
 		}
 		var geojsonObject = {
 			'type' : 'FeatureCollection',
 			'crs' : {
 				'type' : 'name',
-				'properties' : {
-					'name' : 'EPSG:3857'
-				}
 			},
 			'features' : features
 		};
@@ -259,11 +192,11 @@ Mapa.prototype = {
 	},
 	buscarArea : function(codArea) {
 		var source;
-		if(codArea != undefined && codArea != '') {
+		if (codArea != undefined && codArea != '') {
 			this.source.forEachFeature(function(feature) {
-				if(feature.get('id') === codArea) {
+				if (feature.get('id') === codArea) {
 					source = new ol.source.Vector({
-						features : [feature],
+						features : [ feature ],
 						wrapX : false
 					});
 				}
@@ -272,5 +205,32 @@ Mapa.prototype = {
 			source = this.source;
 		}
 		this.map.getView().fit(source.getExtent(), this.map.getSize());
+	},
+	notifyAddFeature : function(feature) {
+		this.openFormSave.notify({
+			coords : feature.getGeometry().getCoordinates(),
+			feature : feature
+		});
+	},
+	buildPopup : function(lenSele, lenDese, selected) {
+		if (lenSele == 1) {
+			var infoArea = selected.get('name');
+			var content = '<div class="divPopup"><p>' + infoArea
+					+ '</p></div>';
+			this.popup.show(selected.getGeometry().getExtent(), content);
+			coords = selected.getGeometry().getCoordinates();
+			this.openFormSave.notify({
+				coords : coords,
+				feature : selected
+			});
+		} else if (lenDese == 1) {
+			this.popup.hide();
+		}
+	},
+	setSource : function(source) {
+		this.source = source;
+	}, 
+	vector : function(geoJSON) {
+		return  new ol.source.Vector({features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
 	}
 }

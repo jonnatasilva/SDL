@@ -16,8 +16,6 @@ import org.json.JSONArray;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-
-
 @Entity
 @Data
 @Table(name="sdl_area", uniqueConstraints={
@@ -28,16 +26,16 @@ public class SDLArea implements Comparable<SDLArea>{
 	
 	@Id
 	@GeneratedValue
-	protected Long id;
+	private Long id;
 	
 	@Column(name="codigo")
-	protected String codigo;
+	private String codigo;
 	
 	@Column(name="descricao", nullable=false)
-	protected String descricao;
+	private String descricao;
 	
 	@Column(name="locale", nullable=false)
-	protected byte[] locale;
+	private byte[] locale;
 	
 	@Type(type="org.hibernate.spatial.GeometryType")
 	@Column(name="location_geometry", columnDefinition="Geometry")
