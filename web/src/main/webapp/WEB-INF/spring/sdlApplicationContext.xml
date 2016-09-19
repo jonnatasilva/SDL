@@ -11,11 +11,12 @@
 
 	<context:property-placeholder location="classpath*:database.properties" />
 	<context:component-scan base-package="br.com.trabalho.tg" />
-	
+
 
 	<jpa:repositories base-package="br.com.trabalho.tg"
 		transaction-manager-ref="sdlTransactionManager"
 		entity-manager-factory-ref="sdlEntityManagerFactory" />
+
 
 <!-- 	<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
 <!-- 		<property name="jndiName" value="java:comp/env/bancoSDL" /> -->
@@ -26,12 +27,14 @@
 			<property name="jndiName" value="java:comp/env/bancoSDLSqlServer" />
 			<property name="resourceRef" value="true" />
 		</bean>
-	
 
-	<!-- Datasource <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
-		<property name="driverClassName" value="org.h2.Driver" /> <property name="url" 
-		value="jdbc:h2:~/test" /> <property name="username" value="sa" /> <property 
-		name="password" value="dba" /> </bean> -->
+<!-- 	<bean id="sdlDataSource" -->
+<!-- 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="org.h2.Driver" /> -->
+<!-- 		<property name="url" value="jdbc:h2:~/test" /> -->
+<!-- 		<property name="username" value="sa" /> -->
+<!-- 		<property name="password" value="dba" /> -->
+<!-- 	</bean> -->
 
 	<bean id="sdlEntityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
@@ -44,15 +47,16 @@
 				<prop key="hibernate.cache.use_query_cache">false</prop>
 				<prop key="hibernate.cache.use_second_level_cache">false</prop>
 				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
 			</props>
 		</property>
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="false" />
 				<property name="generateDdl" value="true" />
-<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/> -->
+
 				<property name="databasePlatform" value="org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect"/>
+<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.H2Dialect" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -66,8 +70,9 @@
 	<tx:annotation-driven transaction-manager="sdlTransactionManager"
 		proxy-target-class="false" />
 
-	<bean id="multipartResolver" 
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" scope="prototype">
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		scope="prototype">
 	</bean>
 	<tx:annotation-driven />
 

@@ -90,16 +90,4 @@ public class KmlUtils {
 	public static JSONArray parse(Feature feature) throws Exception{
 		return parseFeature(feature);
 	}
-	
-//	public static void main(String args[]) {
-//		final Kml kml = Kml.unmarshal(new File("C:/Users/Jonnatas/teste.kml"));
-//		Feature feature = kml.getFeature();
-//		JSONArray array = parseFeature(feature);
-//		for (Object obj : array) {
-//			System.out.println(obj.toString());
-//		}
-//		Kml.
-//
-//	}
-
 }

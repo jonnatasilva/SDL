@@ -4,11 +4,13 @@
 <html>
 <head>
 	<script type="text/javascript" src='<c:url value="/static/lib/min/jquery.min.js" /> '></script>
+	<script type="text/javascript" src='<c:url value="/static/lib/jquery.toaster.js" /> '></script>
 	
 	<script type="text/javascript" src='<c:url value="/static/lib/bootstrap-3.3.6/js/bootstrap.min.js" />' ></script>
-	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol.js" />'></script>
+	<script type="text/javascript" src='<c:url value="/static/lib/ol/v3.18.2-dist/ol.js" />'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/ol/ol-popup.js"/>'></script>
 	<script type="text/javascript" src='<c:url value="/static/lib/filestyle/jquery-filestyle.js"/>'></script>
+	
 <!-- 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
 <%-- 	<script type="text/javascript" src='<c:url value="/static/lib/ol3-google-maps-v0.11.0/ol3gm.js"/>'></script>	 --%>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/mapa.js" />'></script>
@@ -21,7 +23,7 @@
 
 	<!-- importação de css -->
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/bootstrap-3.3.6/css/bootstrap.min.css" />'>
-	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/ol/ol.css"/>'>
+	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/ol/v3.18.2-dist/ol.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/filestyle/jquery-filestyle.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/css/style.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/css/menu.css"/>'>
@@ -40,8 +42,17 @@
 		</div>
 	</div>
 	
-	<div id="map" class="map"></div>
-	
+	<div id="map" class="map">
+	</div>
+	<div class="sdlControls ol-unselectable ol-control">
+		<button>
+			<span class="glyphicon glyphicon-pencil btnPintar" aria-hidden="true"></span>
+		</button>
+		<button>
+			<span class="glyphicon glyphicon-hand-up btnVisuDetal" aria-hidden="true"></span>
+		</button>
+	</div>
+
 	<%@include  file="/WEB-INF/static/modalSalvar.html" %>
 	<%@include  file="/WEB-INF/static/modalAutomatic.html" %>
 	

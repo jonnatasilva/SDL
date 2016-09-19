@@ -3,15 +3,18 @@ body {
 	padding: 0;
 	overflow: hidden;
 }
-#map{
+
+#map {
 	position: absolute;
 	width: 100%;
 	float: left;
 }
-.ol-zoom{
+
+.ol-zoom {
 	left: initial !important;
 	right: .5em !important;
 }
+
 .addForm {
 	position: absolute;
 	background-color: white;
@@ -53,6 +56,7 @@ body {
 	text-align: center;
 	z-index: 999;
 }
+
 #preparando .conteudo {
 	position: absolute;
 	text-align: center;
@@ -70,49 +74,69 @@ body {
 	color: black;
 }
 
-#sideBar{
-    position:absolute;
-    left:0;
-    top:0;
-    bottom:0;
-    background-color:#222;
-    padding:0 10px;
+#sideBar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #222;
+	padding: 0 10px;
 }
-#sideBar > ul {
-    float:left;
+
+#sideBar>ul {
+	float: left;
 }
-#sideBar > ul > li > a{
-    color:#9d9d9d;
+
+#sideBar>ul>li>a {
+	color: #9d9d9d;
 }
-#sideBar > ul > li > a:hover{
-    background:#080808;
-    color:#FFF;
+
+#sideBar>ul>li>a:hover {
+	background: #080808;
+	color: #FFF;
 }
-#sideBar > ul > li > a > span {
-    display:none;
+
+#sideBar>ul>li>a>span {
+	display: none;
 }
+
 .plusInfo {
-	margin: 4px!important;
+	margin: 4px !important;
 }
 /* .plusInfo, .erroCampos, .arrayIncorreto, .arrayIncorretoImpt, .arrayInc { */
 /* 	display: none !important; */
-	
+
 /* }	 */
-@font-face{ 
-	font-family : ' FontAwesome ' ; 
-	src : url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?v=4.2.0 ' ); 
-	src : url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0 ' ) format ( ' embedded-opentype ' ), url ( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.woff?v=4.2.0 ' ) format ( ' woff ' ),
+@font-face {
+	font-family: ' FontAwesome ';
+	src: url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?v=4.2.0 ');
+	src: url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0 ')
+		format( ' embedded-opentype '), url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.woff?v=4.2.0 ')
+		format( ' woff '),
 }
+
 .iconOpt {
 	margin-right: 10px !important;
 }
+
 .iconOpt, .iconOpt a {
 	color: #2F4F4F;
 }
+
 .modal-body {
 	max-height: 300px;
 	overflow-y: scroll;
 }
+
 .menuMaisOpt {
 	margin: 12px;
+}
+
+.sdlControls {
+	top: 65px;
+	right: .5em;
+}
+
+.ol-touch .sdlControls {
+	top: 80px;
 }
