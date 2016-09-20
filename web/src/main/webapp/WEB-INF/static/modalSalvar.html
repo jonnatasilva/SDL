@@ -13,7 +13,6 @@
 			<div class="modal-body">
 				<form id="formModalSalvar" class="form-inline">
 					<select class="form-control" name="area">
-<!-- 						<option value="codigo" selected>${codigo}</option> -->
 						<c:forEach items="${local['areasLocal']}" var="area">
 								<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
 						</c:forEach>
@@ -21,6 +20,11 @@
 					<input type="hidden" name="coordenadas" />
 					<input type="hidden" name="usuario" />
 					<input type="hidden" name="local" />
+					<div class="plusInfo alert alert-danger">
+							<label class="form-control-label erroCampos">Campos devem
+							ser preenchidos!</label> <label class="form-control-label falhaSalvar">Falha
+							ao salvar!</label>
+					</div>
 <!-- 					<label class="form-control-label">Código: </label> <input autofocus -->
 <!-- 						type="text" name="codigo" class="form-control" required> <label -->
 <!-- 						class="form-control-label">Descrição: </label> <input type="text" -->
@@ -28,11 +32,6 @@
 <!-- 						<input type="hidden" name="coordenadas" /> -->
 <!-- 						<input type="hidden" name="usuario" /> -->
 <!-- 						<input type="hidden" name="local" /> -->
-<!-- 					<div class="plusInfo alert alert-danger"> -->
-<!-- 							<label class="form-control-label erroCampos">Campos devem -->
-<!-- 							ser preenchidos!</label> <label class="form-control-label falhaSalvar">Falha -->
-<!-- 							ao salvar!</label> -->
-<!-- 					</div> -->
 
 				</form>
 			</div>

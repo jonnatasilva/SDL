@@ -232,5 +232,13 @@ Mapa.prototype = {
 	}, 
 	vector : function(geoJSON) {
 		return  new ol.source.Vector({features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
+	},
+	removeFeaturesWithOutId : function() {
+		this.source.forEachFeature(function(feature) {
+			if(feature.get('id') === undefined || feature.get('id') === '' || feature.get('id') === 0) {
+				this.source.removeFeature(feature);
+				$.toaster({ priority : 'warning', title : 'Notificação', message : 'Area removida!'});
+			}
+		});
 	}
 }

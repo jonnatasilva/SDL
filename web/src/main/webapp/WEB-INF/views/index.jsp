@@ -71,7 +71,7 @@
 				areas.push(new AreaLocal(null, codAreaLocal, descAreaLocal));
 			</c:forEach>
 		
-			var local = new Local(idLocal, codLocal, descLocal, areas);
+			var local = new Local(idLocal, codLocal, descLocal, null, areas);
 			
 			//Set ObjetoUsuario
 			var id = <c:out value="${usuario['id']}"></c:out>;
@@ -109,8 +109,8 @@
 					'formModal': $('#formSalvar #formModalSalvar'),
 					'plusInfo' : {
 						'this' : $('#formSalvar .plusInfo'),
-						'erroCampos ': $('#formSalvar .plusInfo .erroCampos'),
-						'falhaSalvar' : $('#formSalvar .plusInfo .falha'),
+						'erroCampos': $('#formSalvar .plusInfo .erroCampos'),
+						'falhaSalvar' : $('#formSalvar .plusInfo .falhaSalvar'),
 					},
 					'btnSave' : $('#formSalvar #save')
 				}

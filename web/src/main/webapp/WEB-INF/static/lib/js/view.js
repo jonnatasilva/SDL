@@ -283,8 +283,7 @@ View.prototype = {
 			var modal = _this._elements.modalSalvar['this'];
 			containErro = _this._elements.modalSalvar.plusInfo;
 			_this.hideElementsObjeto(containErro);
-			$('#formSalvar #formModalSalvar input[name="codigo"]').val(feature.get('id'));
-			$('#formSalvar #formModalSalvar input[name="descricao"]').val(feature.get('name'));
+			$('#formSalvar #formModalSalvar select[name="area"]').val(feature.get('id'));
 			$('#formSalvar #formModalSalvar input[name="coordenadas"]').val(coords);
 			$('#formSalvar #formModalSalvar input[name="usuario"]').val(_this._usuario.getId());
 			$('#formSalvar #formModalSalvar input[name="local"]').val(_this._local.getId());
@@ -294,37 +293,41 @@ View.prototype = {
 				var $form = _this._elements.modalSalvar.formModal;
 				var erroEnc = false;
 				$.each($form.serializeArray(), function(i, field) {
-					console.log(field.value.codigo);
-					if (field.name.indexOf("area") === 0) {
-						
-//						if (field.value === undefined || field.value === "") {
-//							containErro.erroCampos.show();
-//							erroEnc = true;
-//						}
-						for(var i = 0; i < areas.length; i++) {
-							if(areas[i].codigo === field.value) {
-								values['codigo'] = areas[i].codigo;
-								values['descricao'] = areas[i].descricao;
-								break;
+					if (field.value === undefined || field.value === "") {
+						containErro['this'].show();
+						containErro.erroCampos.show();
+						erroEnc = true;
+					} else {
+						if (field.name.indexOf("area") === 0) {						
+							for(var i = 0; i < _this._local._areas.length; i++) {
+								if(_this._local._areas[i]._codigo === field.value) {
+									values['codigo'] = _this._local._areas[i]._codigo;
+									values['descricao'] = _this._local._areas[i]._descricao;
+									break;
+								}
 							}
+						} else if(field.name.indexOf("coordenadas") === 0) {
+							values['locale'] = field.value;
+						} else if(field.name.indexOf("local") === 0) {
+							values['local'] = field.value;
+						} else if(field.name.indexOf("usuario") === 0) {
+							values['usuario'] = field.value;
 						}
-					} else if (field.name.indexOf("descricao") === 0) {
-						if (field.value === undefined || field.value === "") {
-							containErro.erroCampos.show();
-							erroEnc = true;
-						}
-					} else if(field.name.indexOf("coordenadas") === 0) {
-						values['locale'] = field.value;
-					} else if(field.name.indexOf("local") === 0) {
-						values['local'] = field.value;
-					} else if(field.name.indexOf("usuario") === 0) {
-						values['usuario'] = field.value;
 					}
 				});
-				if (!erroEnc) {
+				if (!erroEnc && values.hasOwnProperty('codigo')) {
+					feature.set('id', values['codigo']);
+					feature.set('name', values['codigo'] + ' - ' + values['descricao']);
 					_this.salvar.notify({ index : event.target.selectedIndex, area: values });
+				} else {
+					containErro['this'].show();
+					containErro.erroCampos.show();
 				}
 			});
+		});
+		this._elements.modalSalvar['this'].on('hidden.bs.modal', function () {
+			  // do something…
+			_this._mapa.removeFeaturesWithOutId();
 		});
 		$('#formSalvar').modal('show');
 	},
