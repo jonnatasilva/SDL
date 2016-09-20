@@ -181,6 +181,7 @@ View.prototype = {
 		values = [];
 		codigo = '';
 		descricao = '';
+		
 		if (!this._model.validateBrancoOuZero($form, ['codigo', 'descricao'])) {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, true);
 			formArray = $form.serializeArray();
@@ -196,7 +197,7 @@ View.prototype = {
 					codigo = field.value;
 				} else if(field.name.indexOf("descricao") === 0) {
 					descricao = field.value;
-				}
+				} 
 			}
 			var polygon = this._mapa.createPolygon(array, codigo, descricao);
 			style = this._mapa.defineStyle(this._elements.modalAutomatic.background.val(), this._elements.modalAutomatic.border.val());			
@@ -206,9 +207,6 @@ View.prototype = {
 		} else {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, false);
 		}
-	},
-	defineStyle: function(backgroundColor, borderColor) {
-		
 	},
 	mensagemValidateForm: function (obj, valido) {
 		if (!valido) {
@@ -294,24 +292,13 @@ View.prototype = {
 				var $form = _this._elements.modalSalvar.formModal;
 				var erroEnc = false;
 				$.each($form.serializeArray(), function(i, field) {
-					console.log(field.value.codigo);
 					if (field.name.indexOf("area") === 0) {
-						
-//						if (field.value === undefined || field.value === "") {
-//							containErro.erroCampos.show();
-//							erroEnc = true;
-//						}
-						for(var i = 0; i < areas.length; i++) {
-							if(areas[i].codigo === field.value) {
-								values['codigo'] = areas[i].codigo;
-								values['descricao'] = areas[i].descricao;
+						for(var i = 0; i < _this._local._areas.length; i++) {
+							if(_this._local._areas[i]._codigo === field.value) {
+								values['codigo'] = _this._local._areas[i]._codigo;
+								values['descricao'] = _this._local._areas[i]._descricao;
 								break;
 							}
-						}
-					} else if (field.name.indexOf("descricao") === 0) {
-						if (field.value === undefined || field.value === "") {
-							containErro.erroCampos.show();
-							erroEnc = true;
 						}
 					} else if(field.name.indexOf("coordenadas") === 0) {
 						values['locale'] = field.value;
@@ -322,7 +309,7 @@ View.prototype = {
 					}
 				});
 				if (!erroEnc) {
-					_this.salvar.notify({ index : event.target.selectedIndex, area: values });
+					_this.salvar.notify({ index : event.target.selectedIndex, area: values, feature : feature });
 				}
 			});
 		});

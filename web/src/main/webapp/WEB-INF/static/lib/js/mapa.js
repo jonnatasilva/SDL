@@ -66,18 +66,7 @@ Mapa.prototype = {
 					color : '#ffcc33'
 				})
 			}),
-			text : new ol.style.Text({
-				font : '12px helvetica,sans-serif',
-				text : source.Feature,
-				rotation : 360 * Math.PI / 180,
-				fill : new ol.style.Fill({
-					color : '#000'
-				}),
-				stroke : new ol.style.Stroke({
-					color : '#fff',
-					width : 1
-				})
-			})
+			
 		})
 		return style;
 	},
@@ -88,7 +77,7 @@ Mapa.prototype = {
 			source : new ol.source.OSM("Mapa")
 		});
 
-		this.source = this.vector(geojsonObject);
+		this.source = this.createVector(geojsonObject);
 
 		// Adicionar evento que irá executar, quando
 		// terminar de desenha polygon
@@ -99,7 +88,7 @@ Mapa.prototype = {
 		this.selectSingleClick = new ol.interaction.Select({
 			style : new ol.style.Style({
 				stroke : new ol.style.Stroke({
-					color : 'red',
+					color : '#FF4500',
 					width : 2
 				})
 			}),
@@ -107,10 +96,9 @@ Mapa.prototype = {
 				return true;
 			}
 		});
-
+		
 		var vector = new ol.layer.Vector({
 			source : _this.source,
-			style : _this.defineStyle('rgba(255, 255, 255, 0.6)', '#319FD3') 
 		});
 
 		var select = new ol.interaction.Select({
@@ -136,9 +124,9 @@ Mapa.prototype = {
 			})
 		});
 
-//		if(this.source.getFeatures().length > 0 ) {
-//			 this.map.getView().fit(this.source.getExtent(), this.map.getSize());
-//		 }
+		if(this.source.getFeatures().length > 0 ) {
+			 this.map.getView().fit(this.source.getExtent(), this.map.getSize());
+		 }
 
 		var value = 'Polygon';
 		this.draw = new ol.interaction.Draw({
@@ -177,8 +165,6 @@ Mapa.prototype = {
 					'type' : 'Polygon',
 					'coordinates' : [ x ]
 				},
-			// 'style': this.defineStyle(data[i]['backgroundColor'],
-			// data[i]['borderColor'])
 			});
 		}
 		var geojsonObject = {
@@ -230,7 +216,10 @@ Mapa.prototype = {
 	setSource : function(source) {
 		this.source = source;
 	}, 
-	vector : function(geoJSON) {
+	createVector : function(geoJSON) {
 		return  new ol.source.Vector({features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
+	},
+	updateFeature : function(feature, id, nome) {
+		console.log(this.source.getFeatures());
 	}
 }

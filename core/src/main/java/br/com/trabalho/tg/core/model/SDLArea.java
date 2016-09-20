@@ -41,12 +41,6 @@ public class SDLArea implements Comparable<SDLArea>{
 	@Column(name="location_geometry", columnDefinition="Geometry")
     private Geometry location;
 	
-	@Column(name="background_color", nullable=true)
-	private String backgroundColor;
-	
-	@Column(name="border_color", nullable=true)
-	protected String borderColor;
-	
 	@Column(name="id_local", nullable=true)
 	protected Long idLocal;
 

@@ -120,10 +120,8 @@ public class AreaController extends ExceptionHandling {
 				areaAux.setId((Long) a[0]);
 				areaAux.setCodigo((String) a[1]);
 				areaAux.setDescricao((String) a[2]);
-				areaAux.setBackgroundColor((String) a[3]);
-				areaAux.setBorderColor((String) a[4]);
-				areaAux.setIdLocal((Long) a[5]);
-				areaAux.setLocale((byte[]) a[6]);
+				areaAux.setIdLocal((Long) a[3]);
+				areaAux.setLocale((byte[]) a[4]);
 				areas.add(areaAux);
 			}
 		}

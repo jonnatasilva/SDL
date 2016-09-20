@@ -17,7 +17,7 @@ public interface AreaDAO extends JpaRepository<SDLArea, Long>{
 	
 	List<SDLArea> findByIdLocal(Long idLocal);
 	
-	@Query("select t.id, t.codigo, t.descricao, t.backgroundColor, t.borderColor, t.idLocal, t.locale from #{#entityName} t where t.idLocal = ?1")
+	@Query("select t.id, t.codigo, t.descricao, t.idLocal, t.locale from #{#entityName} t where t.idLocal = ?1")
 	List<Object[]> findWithOutLocationByIdLocal(Long local);
 	
 
