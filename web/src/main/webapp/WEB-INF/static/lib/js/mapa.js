@@ -5,6 +5,7 @@ function Mapa() {
 	var selectSingleClick;
 	var modify;
 	var popup;
+	var vector;
 	var _this = this;
 
 	this.openFormSave = new Event(this);
@@ -97,7 +98,7 @@ Mapa.prototype = {
 			}
 		});
 		
-		var vector = new ol.layer.Vector({
+		this.vector = new ol.layer.Vector({
 			source : _this.source,
 		});
 
@@ -115,7 +116,7 @@ Mapa.prototype = {
 
 		this.map = new ol.Map({
 			interactions : ol.interaction.defaults().extend([ select ]),
-			layers : [ raster, vector ],
+			layers : [ raster, this.vector ],
 			target : 'map',
 			view : new ol.View({
 				projection : 'EPSG:4326',
@@ -219,7 +220,16 @@ Mapa.prototype = {
 	createVector : function(geoJSON) {
 		return  new ol.source.Vector({features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
 	},
-	updateFeature : function(feature, id, nome) {
-		console.log(this.source.getFeatures());
+	removeFeaturesWithOutId : function() {
+		_this = this;
+		this.source.forEachFeature(function(feature) {
+			if(feature.get('id') === undefined || feature.get('id') === '' || feature.get('id') === 0) {
+				_this.removeFeature(feature);
+				$.toaster({ priority : 'warning', title : 'Notificação', message : 'Area removida!'});
+			}
+		});
+	},
+	removeFeature : function(feature) {
+		this.source.removeFeature(feature);	
 	}
 }

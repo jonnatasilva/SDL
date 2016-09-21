@@ -109,8 +109,8 @@
 					'formModal': $('#formSalvar #formModalSalvar'),
 					'plusInfo' : {
 						'this' : $('#formSalvar .plusInfo'),
-						'erroCampos ': $('#formSalvar .plusInfo .erroCampos'),
-						'falhaSalvar' : $('#formSalvar .plusInfo .falha'),
+						'erroCampos': $('#formSalvar .plusInfo .erroCampos'),
+						'falhaSalvar' : $('#formSalvar .plusInfo .falhaSalvar'),
 					},
 					'btnSave' : $('#formSalvar #save')
 				}
