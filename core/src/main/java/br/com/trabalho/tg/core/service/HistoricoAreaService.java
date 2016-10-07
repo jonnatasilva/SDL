@@ -6,16 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.trabalho.tg.core.dao.HistoricoAreaDAO;
-import br.com.trabalho.tg.core.handling.ExceptionHandling;
 import br.com.trabalho.tg.core.model.HistoricoArea;
 
-@Service
-public class HistoricoAreaService extends ExceptionHandling{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1790035498103938525L;
+@Service("sdlHistoricoService")
+public class HistoricoAreaService {
+
 	@Autowired
 	private HistoricoAreaDAO dao;
 	

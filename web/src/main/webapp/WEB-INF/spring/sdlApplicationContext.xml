@@ -5,21 +5,21 @@
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-	<context:property-placeholder location="classpath*:database.properties" />
+	<context:annotation-config />
+	
+<!-- 	<context:property-placeholder location="classpath*:database.properties" /> -->
+	
 	<context:component-scan base-package="br.com.trabalho.tg" />
-
+ 	
 
 	<jpa:repositories base-package="br.com.trabalho.tg"
 		transaction-manager-ref="sdlTransactionManager"
 		entity-manager-factory-ref="sdlEntityManagerFactory" />
-
 
 <!-- 	<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
 <!-- 		<property name="jndiName" value="java:comp/env/bancoSDL" /> -->
@@ -79,6 +79,9 @@
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
 		scope="prototype">
 	</bean>
-	<tx:annotation-driven />
+	
+	
+	
+<!-- 	<tx:annotation-driven /> -->
 
 </beans>

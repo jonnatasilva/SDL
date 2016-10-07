@@ -3,34 +3,36 @@ package br.com.trabalho.tg.core.impl;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import br.com.trabalho.tg.core.dao.AreaDAO;
-import br.com.trabalho.tg.core.dao.AreaDB;
-import br.com.trabalho.tg.core.model.SDLArea;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 
-@Repository
-public class AreaDBIpml implements AreaDB{
+import br.com.trabalho.tg.core.dao.AreaDAO;
+import br.com.trabalho.tg.core.dao.AreaIntersectionDAO;
+import br.com.trabalho.tg.core.model.SDLArea;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+@Repository("sdlAreaDBImpl")
+public class AreaDBImpl implements AreaIntersectionDAO {
 
 	@Autowired
 	private AreaDAO areaDAO;
-
-	protected EntityManager manager;
-
+	
 	// Metodo utilizado para retornar areas com interseção com um ponto
-	public JSONArray findIntersectionByLocal(Long local, String point) throws Exception {
+	public JSONArray findIntersectionByLocal(Long local, String latiude, String longitude) {
 		// Retornar todas as areas para o local
-		List<SDLArea> areas = areaDAO.findByIdLocal(local);
-		Collections.sort(areas);
-		return this.findIntersects(point, areas);
+		try {
+			List<SDLArea> areas = areaDAO.findByidLocal(local);
+			Collections.sort(areas);
+			return this.findIntersects(latiude + " " + longitude, areas);
+		}catch (Exception e) {
+			log.error(e);
+		}
+		return null;
 	}
 
 	public JSONArray findIntersects(String point, List<SDLArea> areas) throws Exception {
@@ -43,10 +45,5 @@ public class AreaDBIpml implements AreaDB{
 			}
 		}
 		return array;
-	}
-
-	@PersistenceContext
-	public void setManager(EntityManager manager) {
-		this.manager = manager;
 	}
 }

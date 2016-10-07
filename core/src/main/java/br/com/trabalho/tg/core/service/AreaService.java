@@ -8,16 +8,20 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.trabalho.tg.core.dao.AreaDAO;
+import br.com.trabalho.tg.core.dao.AreaIntersectionDAO;
 import br.com.trabalho.tg.core.model.SDLArea;
 
-@Service
-public class AreaService {
+@Service("sdlAreaService")
+public class  AreaService {
 	
 	@Autowired
 	private AreaDAO dao;
 	
-	public SDLArea getAreaByCodigo(String codigo) throws Exception {
-		return dao.findByCodigo(codigo);
+	@Autowired 
+	private AreaIntersectionDAO daoIntersection;
+	
+	public SDLArea getAreaByCodigoAndIdLocal(String codigo, long local) throws Exception {
+		return dao.findByCodigoAndIdLocal(codigo, local);
 	}
 	
 	public SDLArea saveArea(SDLArea entity) throws Exception {
@@ -25,8 +29,11 @@ public class AreaService {
 	}
 
 	@Transactional(propagation=Propagation.REQUIRED)
-	public List<Object[]> getAreasByLocal(long idLocal) throws Exception {
+	public List<Object[]> getAreasByLocal(long idLocal) {
 		return dao.findWithOutLocationByIdLocal(idLocal);
 	}
-
+	
+	public void getIntesection(long local, String latitude, String longitude) {
+		daoIntersection.findIntersectionByLocal(local, latitude, longitude);
+	}
 }

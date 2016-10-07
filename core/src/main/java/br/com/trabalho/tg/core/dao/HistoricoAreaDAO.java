@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.trabalho.tg.core.model.HistoricoArea;
 
-@Repository
+@Repository("sdlHistoricoAreaDAO")
 public interface HistoricoAreaDAO extends JpaRepository<HistoricoArea, Long> {
 	
 }

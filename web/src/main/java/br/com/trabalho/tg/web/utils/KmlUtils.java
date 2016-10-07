@@ -40,21 +40,6 @@ public class KmlUtils {
 							if(arrayAux.length() > 0)
 								aux.put(arrayAux);
 						}
-						// if (f instanceof Document) {
-						// Document d = (Document) f;
-						// for (Feature f2 : d.getFeature()) {
-						// if (f2 instanceof Placemark) {
-						// Placemark p2 = (Placemark) f2;
-						// Geometry g = p2.getGeometry();
-						// System.out.println(p2.getName());
-						// parseGeometry(g);
-						// }
-						// }
-						// } else if (f instanceof Placemark) {
-						// Placemark p = (Placemark) f;
-						// System.out.println(p.getName());
-						// }
-						// }
 					}
 				}
 			}
@@ -72,11 +57,6 @@ public class KmlUtils {
 					LinearRing linearRing = outerBoundaryIs.getLinearRing();
 					if (linearRing != null) {
 						coordinates = linearRing.getCoordinates();
-						// if(coordinates != null) {
-						// for(Coordinate coordinate : coordinates) {
-						// parseCoordinate(coordinate);
-						// }
-						// }
 					}
 				}
 			} else if (geometry instanceof Point) {

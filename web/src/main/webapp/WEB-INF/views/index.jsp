@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -21,7 +22,7 @@
 <%-- 	<script type="text/javascript" src='<c:url value="/static/lib/js/script.js"/>'></script> --%>
 	<script type="text/javascript" src='<c:url value="/static/lib/js/menu.js"/>'></script>
 
-	<!-- importação de css -->
+	<!-- importaÃ§Ã£o de css -->
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/bootstrap-3.3.6/css/bootstrap.min.css" />'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/ol/v3.18.2-dist/ol.css"/>'>
 	<link type="text/css" rel="stylesheet" href='<c:url value="/static/lib/filestyle/jquery-filestyle.css"/>'>
@@ -52,6 +53,7 @@
 			<span class="glyphicon glyphicon-hand-up btnVisuDetal" aria-hidden="true"></span>
 		</button>
 	</div>
+	
 
 	<%@include  file="/WEB-INF/static/modalSalvar.html" %>
 	<%@include  file="/WEB-INF/static/modalAutomatic.html" %>
@@ -101,8 +103,6 @@
 						'arrayIncorretoImpt' : $('#btnModal .plusInfo .arrayIncorretoImpt'),
 						'arrayInc' : $('#btnModal .plusInfo .arrayInc')
 					},
-					'background': $('#backgroundColorPicker'),
-					'border': $('#borderColorPicker')
 				},
 				'modalSalvar' : {
 					'this' : $('#formSalvar'),

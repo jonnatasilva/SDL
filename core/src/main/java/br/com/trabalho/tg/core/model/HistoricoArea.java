@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name="historico_area")
+@Table(name="sdl_historico_area")
 public class HistoricoArea {
 	
 	public HistoricoArea(byte[] locale, Long idUsuario, Long idArea) {

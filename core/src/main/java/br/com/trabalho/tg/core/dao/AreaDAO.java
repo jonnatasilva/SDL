@@ -8,14 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import br.com.trabalho.tg.core.model.SDLArea;
 
-@Repository
+@Repository("sdlAreaDAO")
 public interface AreaDAO extends JpaRepository<SDLArea, Long>{
 	
 	SDLArea findByDescricao(String descricao);
 	
-	SDLArea findByCodigo(String codigo);
+	SDLArea findByCodigoAndIdLocal(String codigo, long local);
 	
-	List<SDLArea> findByIdLocal(Long idLocal);
+	List<SDLArea> findByidLocal(Long idLocal);
 	
 	@Query("select t.id, t.codigo, t.descricao, t.idLocal, t.locale from #{#entityName} t where t.idLocal = ?1")
 	List<Object[]> findWithOutLocationByIdLocal(Long local);

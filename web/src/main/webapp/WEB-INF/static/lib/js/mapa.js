@@ -231,5 +231,8 @@ Mapa.prototype = {
 	},
 	removeFeature : function(feature) {
 		this.source.removeFeature(feature);	
-	}
+	},
+	getFeatureById : function(id) {
+		return this.source.getFeatureById(id);
+	} 
 }
