@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -34,6 +35,7 @@ public class SDLArea implements Comparable<SDLArea>{
 	@Column(name="descricao", nullable=false)
 	private String descricao;
 	
+	@Lob
 	@Column(name="locale", nullable=false)
 	private byte[] locale;
 	

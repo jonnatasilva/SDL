@@ -146,7 +146,7 @@ function View(model, elements, usuario, local) {
 			file = event.target.files[0];
 			if (file.type === 'text/plain') {
 				_this.parseTXT.notify({ index : event.target.selectedIndex, file: file });
-			} else if (file.type.indexOf('kml') != -1) {
+			} else if (file.type.indexOf('kml') != -1 || file.name.indexOf('.kml') != -1) {
 				_this.parseKML.notify({ index : event.target.selectedIndex, file: file });
 			}
 		});
@@ -189,12 +189,14 @@ View.prototype = {
 		if (!this._model.validateBrancoOuZero($form, ['codigo', 'descricao'])) {
 			this.mensagemValidateForm(this._elements.modalAutomatic.plusInfo.erroCampos, true);
 			formArray = $form.serializeArray();
+			var latitude;
 			for(var i = 0; i < formArray.length; i++) {
 				field = formArray[i];
 				if (field.name.indexOf("lat") === 0) {
-					values.push(Number(field.value));
+					latitude = Number(field.value); 
 				} else if(field.name.indexOf("long") === 0) {
 					values.push(Number(field.value));
+					values.push(latitude);
 					array.push(values);
 					values = [];
 				} else if(field.name.indexOf("codigo") === 0) {
@@ -330,7 +332,7 @@ View.prototype = {
 		this._elements.modalSalvar['this'].on('hidden.bs.modal', function () {
 			_this._mapa.removeFeaturesWithOutId();
 			setInterval(function() {
-				location.reload();
+//				location.reload();
 			}, 5000);
 		});
 		$('#formSalvar').modal('show');

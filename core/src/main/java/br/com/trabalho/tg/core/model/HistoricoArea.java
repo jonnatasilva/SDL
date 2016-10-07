@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,6 +33,7 @@ public class HistoricoArea {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataAlteracao;
 	
+	@Lob
 	@Column(name="locale", nullable=true)
 	private byte[] locale;
 	

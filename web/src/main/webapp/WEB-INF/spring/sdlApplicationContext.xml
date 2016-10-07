@@ -27,7 +27,7 @@
 <!-- 	</bean> -->
 	
 		<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-			<property name="jndiName" value="java:comp/env/bancoSDLSqlServer" />
+			<property name="jndiName" value="java:comp/env/cmBanco" />
 			<property name="resourceRef" value="true" />
 		</bean>
 		

@@ -1,8 +1,9 @@
 package br.com.trabalho.tg.web.controller;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.extern.log4j.Log4j;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,7 +32,6 @@ import br.com.trabalho.tg.web.enums.MapeamentoEnum;
 import br.com.trabalho.tg.web.utils.GeometryUtils;
 import br.com.trabalho.tg.web.utils.KmlUtils;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import lombok.extern.log4j.Log4j;
 
 @Controller("sdlAreaController")
 @RequestMapping("/map/")
@@ -48,23 +48,25 @@ public class AreaController {
 	AreaDBImpl impl;
 
 	private String prefixoPadrao = "redirect:/static";
+	
+	private List<AreaLocal> areas = new ArrayList<AreaLocal>();
 
 	/*
 	 * Met�do request irá retornar a p�gina default para a manipulação das
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	private ModelAndView iniciar() {
-		File file = new File("global.properties");
+	private ModelAndView iniciar(@RequestParam("local") long idLocal, @RequestParam("areas") JSONArray ars, @RequestParam("usuario") long idUsuario) {
 		ModelAndView model = new ModelAndView("/index");
 		try {
 			List<AreaLocal> areas = new ArrayList<AreaLocal>();
-			for(Integer i = 1; i <= 3; i++) {
-				AreaLocal areaLocal = new AreaLocal(i.toString(), "Area " + i);
+			
+			for(int i = 0; i < ars.length(); i++) {
+				AreaLocal areaLocal = new AreaLocal(ars.getJSONObject(i).get("codigo").toString(), ars.getJSONObject(i).getString("descricao"));
 				areas.add(areaLocal);
 			}
-			Local local = new Local((long) 1, "1", "Local Teste", "America/São", areas);
+			Local local = new Local(idLocal, "1", "Local Teste", "America/São", areas);
 			model.addObject("local", local);
-			model.addObject("usuario", new UsuarioMock(1, "1","Jonnatas"));
+			model.addObject("usuario", new UsuarioMock(idUsuario, "1","Jonnatas"));
 		}catch (Exception e) {
 			log.error(e);
 		}
@@ -90,6 +92,7 @@ public class AreaController {
 				area.setDescricao(json.getString("descricao"));
 				String arrayString = json.getString("locale");
 				area.setLocale(arrayString.getBytes());
+				System.out.println(arrayString.getBytes().length);
 				area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
 				area = service.saveArea(area);
 				historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area.getId()));
@@ -172,4 +175,6 @@ public class AreaController {
 	public ResponseEntity<String> excpetionHandler() {
 		return new ResponseEntity<String>(HttpStatus.CONFLICT);
 	}
+	
+	
 }
