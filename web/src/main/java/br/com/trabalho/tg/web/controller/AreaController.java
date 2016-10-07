@@ -54,18 +54,13 @@ public class AreaController extends ExceptionHandling {
 	 * Met�do request irá retornar a p�gina default para a manipulação das
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	private ModelAndView iniciar() throws Exception {
-
-//		impl.findByLocation(null, null);
-		List<AreaLocal> areas = new ArrayList<AreaLocal>();
-		for(Integer i = 1; i <= 3; i++) {
-			AreaLocal areaLocal = new AreaLocal(i.toString(), "Area " + i);
-			areas.add(areaLocal);
-		}
-		Local local = new Local((long) 1, "1", "Local Teste", "America/São", areas);
+	private ModelAndView iniciar(@RequestParam("local") long idLocal, 
+			@RequestParam("") List<AreaLocal> areas, @RequestParam("usuario") long idUsuario) throws Exception {
+		
+		Local local = new Local(idLocal, "1", "Local Teste", "America/São", areas);
 		ModelAndView model = new ModelAndView("/index");
 		model.addObject("local", local);
-		model.addObject("usuario", new UsuarioMock(1, "1","Jonnatas"));
+		model.addObject("usuario", new UsuarioMock(idUsuario, "1","Jonnatas"));
 		return model;
 	}
 
