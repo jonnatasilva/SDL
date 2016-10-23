@@ -1,0 +1,142 @@
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#map {
+	position: absolute;
+	width: 100%;
+	float: left;
+}
+
+.ol-zoom {
+	left: initial !important;
+	right: .5em !important;
+}
+
+.addForm {
+	position: absolute;
+	background-color: white;
+	-webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+	filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+	padding: 15px;
+	border-radius: 10px;
+	border: 1px solid #cccccc;
+	bottom: 12px;
+	left: 50px;
+	min-width: 280px;
+	display: none;
+}
+
+#painel {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 50px;
+	background-color: white;
+	z-index: 999;
+}
+
+.divPopup {
+	background-color: white;
+	border-radius: 25px;
+	opacity: 0.9;
+	width: 200px;
+	text-align: center;
+	padding: 5px;
+	z-index: 10;
+}
+
+#preparando {
+	position: absolute;
+	background-color: white;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	z-index: 999;
+}
+
+#preparando .conteudo {
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	top: 40%;
+}
+
+#preparando .conteudo p {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 20px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 26.4px;
+	color: black;
+}
+
+#sideBar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #222;
+	padding: 0 10px;
+}
+
+#sideBar>ul {
+	float: left;
+}
+
+#sideBar>ul>li>a {
+	color: #9d9d9d;
+}
+
+#sideBar>ul>li>a:hover {
+	background: #080808;
+	color: #FFF;
+}
+
+#sideBar>ul>li>a>span {
+	display: none;
+}
+
+.plusInfo {
+	margin: 4px !important;
+}
+/* .plusInfo, .erroCampos, .arrayIncorreto, .arrayIncorretoImpt, .arrayInc { */
+/* 	display: none !important; */
+
+/* }	 */
+@font-face {
+	font-family: ' FontAwesome ';
+	src: url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?v=4.2.0 ');
+	src: url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0 ')
+		format( ' embedded-opentype '), url( ' lib/bootstrap-3.3.6/fonts/fontawesome-webfont.woff?v=4.2.0 ')
+		format( ' woff '),
+}
+
+.iconOpt {
+	margin-right: 10px !important;
+}
+
+.iconOpt, .iconOpt a {
+	color: #2F4F4F;
+}
+
+.modal-body {
+	max-height: 300px;
+	overflow-y: scroll;
+}
+
+.menuMaisOpt {
+	margin: 12px;
+}
+
+.sdlControls {
+	top: 65px;
+	right: .5em;
+}
+
+.ol-touch .sdlControls {
+	top: 80px;
+}

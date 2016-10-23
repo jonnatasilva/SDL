@@ -1,0 +1,47 @@
+<!--nav sidebar -->
+<aside>
+	<nav class="navbar navbar-inverse sidebar navbar-fixed-top"
+		role="navigation">
+		<link
+			href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+			rel="stylesheet">
+
+		<div class="nav-side-menu">
+			<div class="brand">SDL</div>
+			<i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse"
+				data-target="#menu-content"></i>
+
+			<div class="menu-list">
+
+				<ul id="menu-content" class="menu-content collapse out">
+					<li><a href="#"> <i class="fa fa-dashboard fa-lg"></i>
+							Dashboard
+					</a></li>
+
+
+					<li data-toggle="collapse" data-target="#service" class="collapsed"><a
+						href="#"><i class="fa fa-globe fa-lg"></i> Services <span
+							class="arrow"></span></a></li>
+					<ul class="sub-menu collapse" id="service">
+						<li class="btnModify">Modificar Manualmente</li>
+						<li class="btnVisuDetal">Modificar Importando</li>
+						<li class="btnAutomatic" data-toggle="modal"
+							data-target="#btnModal" data-whatever="@mdo">Importar Area</li>
+					</ul>
+
+					<li><a href="#"> <i class="	fa fa-question"></i> Help
+					</a></li>
+					<div class="menuMaisOpt">
+						<span id="usuario"> </span>
+						</span><select class="form-control" id="buscaArea" style="width: 200px">
+							<option value="" selected>Buscar Area</option>
+							<c:forEach items="${local['areasLocal']}" var="area">
+								<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
+							</c:forEach>
+						</select>
+					</div>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</aside>

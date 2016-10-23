@@ -1,0 +1,46 @@
+<div class="modal fade" id="formSalvar" tabindex="-1" role="dialog"
+	aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="modalLabel">Salvar Polygon</h4>
+
+			</div>
+			<div class="modal-body">
+				<form id="formModalSalvar" class="form-inline">
+					<select class="form-control" name="area">
+						<c:forEach items="${local['areasLocal']}" var="area">
+								<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
+						</c:forEach>
+					</select>
+					<input type="hidden" name="coordenadas" />
+					<input type="hidden" name="usuario" />
+					<input type="hidden" name="local" />
+					<div class="plusInfo alert alert-danger">
+							<label class="form-control-label erroCampos">Campos devem
+							ser preenchidos!</label> <label class="form-control-label falhaSalvar">Falha
+							ao salvar!</label>
+					</div>
+<!-- 					<label class="form-control-label">Código: </label> <input autofocus -->
+<!-- 						type="text" name="codigo" class="form-control" required> <label -->
+<!-- 						class="form-control-label">Descrição: </label> <input type="text" -->
+<!-- 						name="descricao" class="form-control" required>  -->
+<!-- 						<input type="hidden" name="coordenadas" /> -->
+<!-- 						<input type="hidden" name="usuario" /> -->
+<!-- 						<input type="hidden" name="local" /> -->
+
+				</form>
+			</div>
+
+			<div class="modal-footer">
+
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="save">Save</button>
+			</div>
+		</div>
+	</div>
+</div>

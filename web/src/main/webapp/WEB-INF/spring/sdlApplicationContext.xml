@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:annotation-config />
+	
+	<context:property-placeholder location="classpath*:sdl_database.properties" />
+	
+	<context:component-scan base-package="br.com.trabalho.tg" />
+
+	<jpa:repositories base-package="br.com.trabalho.tg"
+		transaction-manager-ref="sdlTransactionManager"
+		entity-manager-factory-ref="sdlEntityManagerFactory" />
+
+<!-- 	<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
+<!-- 		<property name="jndiName" value="java:comp/env/bancoSDL" /> -->
+<!-- 		<property name="resourceRef" value="true" /> -->
+<!-- 	</bean> -->
+	
+		<bean id="sdlDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+			<property name="jndiName" value="java:comp/env/${jndi.name}" />
+			<property name="resourceRef" value="true" />
+		</bean>
+		
+<!-- 		<jee:jndi-lookup jndi-name="bancoSDLSqlServer" id="sqlDataSource"></jee:jndi-lookup> -->
+
+<!-- 	<bean id="sdlDataSource" -->
+<!-- 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="org.h2.Driver" /> -->
+<!-- 		<property name="url" value="jdbc:h2:~/test" /> -->
+<!-- 		<property name="username" value="sa" /> -->
+<!-- 		<property name="password" value="dba" /> -->
+<!-- 	</bean> -->
+
+	<bean id="sdlEntityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		p:packagesToScan="br.com.trabalho.tg" p:dataSource-ref="sdlDataSource">
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false" />
+				<property name="generateDdl" value="true" />
+				<property name="databasePlatform" value="${hibernate.spatial.dialect}"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="sdlTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="sdlEntityManagerFactory" />
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+	</bean>
+	<tx:annotation-driven transaction-manager="sdlTransactionManager"
+		proxy-target-class="false" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		scope="prototype">
+	</bean>
+	<tx:annotation-driven />
+</beans>
