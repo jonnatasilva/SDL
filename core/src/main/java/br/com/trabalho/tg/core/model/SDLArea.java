@@ -15,6 +15,9 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 
+import br.com.trabalho.tg.core.utils.GeometryUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vividsolutions.jts.geom.Geometry;
 
 @Entity
@@ -22,7 +25,7 @@ import com.vividsolutions.jts.geom.Geometry;
 @Table(name="sdl_area", uniqueConstraints={
 		@UniqueConstraint(columnNames={"codigo", "id_local"})
 })
-
+@JsonIgnoreProperties(value = { "locale", "location" })
 public class SDLArea implements Comparable<SDLArea>{
 	
 	@Id
@@ -49,6 +52,10 @@ public class SDLArea implements Comparable<SDLArea>{
 	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
 		String str = new String(this.locale, "UTF-8");
 		return new JSONArray("[" + str + "]");
+	}
+	
+	public String getPolygon() throws UnsupportedEncodingException {
+		return GeometryUtils.arrayToPolygonStr(getLocaleArray());
 	}
 
 	public int compareTo(SDLArea o) {

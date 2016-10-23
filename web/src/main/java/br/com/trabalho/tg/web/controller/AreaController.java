@@ -28,9 +28,9 @@ import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
 import br.com.trabalho.tg.core.service.AreaService;
 import br.com.trabalho.tg.core.service.HistoricoAreaService;
+import br.com.trabalho.tg.core.utils.GeometryUtils;
+import br.com.trabalho.tg.core.utils.KmlUtils;
 import br.com.trabalho.tg.web.enums.MapeamentoEnum;
-import br.com.trabalho.tg.web.utils.GeometryUtils;
-import br.com.trabalho.tg.web.utils.KmlUtils;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 @Controller("sdlAreaController")
@@ -52,10 +52,16 @@ public class AreaController {
 	private List<AreaLocal> areas = new ArrayList<AreaLocal>();
 
 	/*
-	 * Met�do request irá retornar a p�gina default para a manipulação das
+	 * Metódo irá retornar a página default para a manipulação das
+	 * @param local, id do local de trabalho
+	 * @param areas, areas do local de trabalho {codigo, descricao}
+	 * @param usuario, id do usuario que está usando o sistema requisitante
+	 * @param latInicial, latitude onde o mapa deve abrir ao iniciarm caso não tenha nenhuma área geográfica csdastrada para o local
+	 * @param longInicial longitude ''  			''						''
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	private ModelAndView iniciar(@RequestParam("local") long idLocal, @RequestParam("areas") JSONArray ars, @RequestParam("usuario") long idUsuario) {
+	private ModelAndView iniciar(@RequestParam("local") long idLocal, @RequestParam("areas") JSONArray ars, 
+			@RequestParam("usuario") long idUsuario, @RequestParam("latInicial") long lat, @RequestParam("longInicial") long inicial) {
 		ModelAndView model = new ModelAndView("/index");
 		try {
 			List<AreaLocal> areas = new ArrayList<AreaLocal>();
@@ -102,17 +108,6 @@ public class AreaController {
 		}
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
-	
-//	private Geometry wktToGeometry(String wktPoint) {
-//        WKTReader fromText = new WKTReader();
-//        Geometry geom = null;
-//        try {
-//            geom = fromText.read(wktPoint);
-//        } catch (ParseException e) {
-//            log.error("Not a WKT string:" + wktPoint);
-//        }
-//        return geom;
-//    }
 
 	@RequestMapping(value = "/list/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
@@ -130,7 +125,8 @@ public class AreaController {
 					areaAux.setIdLocal((Long) a[3]);
 					areaAux.setLocale((byte[]) a[4]);
 					areas.add(areaAux);
-				}
+					log.info("Area listada: " + areaAux.getDescricao());
+				} 
 			}
 		} catch (Exception e) {
 			log.error("Falha ao listar Areas: " + e);
@@ -174,6 +170,4 @@ public class AreaController {
 	public ResponseEntity<String> excpetionHandler() {
 		return new ResponseEntity<String>(HttpStatus.CONFLICT);
 	}
-	
-	
 }

@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.trabalho.tg.core.dao.AreaDAO;
 import br.com.trabalho.tg.core.dao.AreaIntersectionDAO;
@@ -27,13 +25,19 @@ public class  AreaService {
 	public SDLArea saveArea(SDLArea entity) throws Exception {
 		return dao.save(entity);
 	}
-
-	@Transactional(propagation=Propagation.REQUIRED)
+	
 	public List<Object[]> getAreasByLocal(long idLocal) {
 		return dao.findWithOutLocationByIdLocal(idLocal);
 	}
 	
 	public void getIntesection(long local, String latitude, String longitude) {
 		daoIntersection.findIntersectionByLocal(local, latitude, longitude);
+	}
+	
+	public SDLArea getLocationByCodigoAndIdLocal(String codigo, long local) {
+		SDLArea areaAux = new SDLArea();
+		byte[] obj = dao.findLocaleByCodigoAndIdLocal(codigo, local);
+		areaAux.setLocale(obj);
+		return areaAux;
 	}
 }

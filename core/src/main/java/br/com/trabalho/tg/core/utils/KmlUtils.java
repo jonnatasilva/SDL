@@ -1,4 +1,4 @@
-package br.com.trabalho.tg.web.utils;
+package br.com.trabalho.tg.core.utils;
 
 import java.util.List;
 
