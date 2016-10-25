@@ -50,8 +50,11 @@ public class SDLArea implements Comparable<SDLArea>{
 	protected Long idLocal;
 
 	public JSONArray getLocaleArray() throws UnsupportedEncodingException {
-		String str = new String(this.locale, "UTF-8");
-		return new JSONArray("[" + str + "]");
+		if(locale != null) {
+			String str = new String(this.locale, "UTF-8");
+			return new JSONArray("[" + str + "]");
+		}
+		return new JSONArray();
 	}
 	
 	public String getPolygon() throws UnsupportedEncodingException {

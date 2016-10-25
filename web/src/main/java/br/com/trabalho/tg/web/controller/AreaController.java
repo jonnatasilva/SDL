@@ -65,12 +65,12 @@ public class AreaController {
 		ModelAndView model = new ModelAndView("/index");
 		try {
 			List<AreaLocal> areas = new ArrayList<AreaLocal>();
-			
 			for(int i = 0; i < ars.length(); i++) {
 				AreaLocal areaLocal = new AreaLocal(ars.getJSONObject(i).get("codigo").toString(), ars.getJSONObject(i).getString("descricao"));
 				areas.add(areaLocal);
 			}
-			Local local = new Local(idLocal, "1", "Local Teste", "America/São", areas);
+			Local local = new Local(idLocal, "1", "Local Teste", "America/São", areas, 
+					service.getAreasLocalByLocal(idLocal));
 			model.addObject("local", local);
 			model.addObject("usuario", new UsuarioMock(idUsuario, "1","Jonnatas"));
 		}catch (Exception e) {
@@ -133,7 +133,14 @@ public class AreaController {
 		}
 		return areas;
 	}
-
+	
+	@RequestMapping(value = "/get/polygon/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	@ResponseStatus(HttpStatus.OK)
+	private @ResponseBody SDLArea listAreas(@RequestParam("idLocal") long idLocal, 
+			@RequestParam("codigo") String codigoArea) throws Exception {
+		return service.getLocationByCodigoAndIdLocal(codigoArea, idLocal);
+	}
+	
 	@RequestMapping(value = "/parse/kml", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
 	private @ResponseBody String parseKML(@RequestParam("kml") MultipartFile file) {

@@ -14,12 +14,14 @@ public class Local {
 	private String descricao;
 	private String timezone; 
 	private List<AreaLocal> areasLocal = new ArrayList<AreaLocal>();
+	private List<AreaLocal> areasDisp = new ArrayList<AreaLocal>();
 	
-	public Local(Long id, String codigo, String descricao, String timezone, List<?> areas) throws Exception {
+	public Local(Long id, String codigo, String descricao, String timezone, List<?> areas, List<AreaLocal> areasDisp) throws Exception {
 		this.id = id;
 		this.codigo = codigo;
 		this.descricao = descricao;
 		this.timezone = timezone;
+		this.areasDisp = areasDisp;
 		this.parseToListAreaLocal(areas);
 	}
 	

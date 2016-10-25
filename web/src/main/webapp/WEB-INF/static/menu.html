@@ -7,20 +7,17 @@
 			rel="stylesheet">
 
 		<div class="nav-side-menu">
-			<div class="brand">SDL</div>
+			<div class="brand">SCLA</div>
 			<i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse"
 				data-target="#menu-content"></i>
 
 			<div class="menu-list">
 
 				<ul id="menu-content" class="menu-content collapse out">
-					<li><a href="#"> <i class="fa fa-dashboard fa-lg"></i>
-							Dashboard
-					</a></li>
 
 
 					<li data-toggle="collapse" data-target="#service" class="collapsed"><a
-						href="#"><i class="fa fa-globe fa-lg"></i> Services <span
+						href="#"><i class="fa fa-globe fa-lg"></i> Serviços <span
 							class="arrow"></span></a></li>
 					<ul class="sub-menu collapse" id="service">
 						<li class="btnModify">Modificar Manualmente</li>
@@ -28,6 +25,9 @@
 						<li class="btnAutomatic" data-toggle="modal"
 							data-target="#btnModal" data-whatever="@mdo">Importar Area</li>
 					</ul>
+					<li><a href="#"> <i class="fa fa-dashboard fa-lg"></i>
+							Log de Operações
+					</a></li>
 
 					<li><a href="#"> <i class="	fa fa-question"></i> Help
 					</a></li>
@@ -35,7 +35,7 @@
 						<span id="usuario"> </span>
 						</span><select class="form-control" id="buscaArea" style="width: 200px">
 							<option value="" selected>Buscar Area</option>
-							<c:forEach items="${local['areasLocal']}" var="area">
+							<c:forEach items="${local['areasDisp']}" var="area">
 								<option value="${area.codigo}">${area.codigo} - ${area.descricao}</option>
 							</c:forEach>
 						</select>
