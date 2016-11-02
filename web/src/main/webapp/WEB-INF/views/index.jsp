@@ -59,9 +59,9 @@
 			$('.dropdown-toggle').dropdown();
 			//Set Objeto local, (Obra, Filial, ETC)
 			var idLocal = <c:out value="${local['id']}"></c:out>;
-			var codLocal = '<c:out value="${local['codigo']}"></c:out>';
-			var descLocal = '<c:out value="${local['descricao']}"></c:out>';
-			var tizoLocal = '<c:out value="${local['timezone']}"></c:out>';
+// 			var codLocal = '<c:out value="${local['codigo']}"></c:out>';
+// 			var descLocal = '<c:out value="${local['descricao']}"></c:out>';
+// 			var tizoLocal = '<c:out value="${local['timezone']}"></c:out>';
 			var areas = [];
 			<c:forEach items="${local['areasLocal'] }" var="area">
 				codAreaLocal = '<c:out value="${area.codigo }"></c:out>';
@@ -69,13 +69,13 @@
 				areas.push(new AreaLocal(null, codAreaLocal, descAreaLocal));
 			</c:forEach>
 		
-			var local = new Local(idLocal, codLocal, descLocal, null, areas);
+			var local = new Local(idLocal, null, null, null, areas);
 			
 			//Set ObjetoUsuario
 			var id = <c:out value="${usuario['id']}"></c:out>;
-			var cod = '<c:out value="${usuario['codigo']}"></c:out>';
-			var nome = '<c:out value="${usuario['nome']}"></c:out>';
-			var usuario = new Usuario(id, cod, nome);
+// 			var cod = '<c:out value="${usuario['codigo']}"></c:out>';
+// 			var nome = '<c:out value="${usuario['nome']}"></c:out>';
+			var usuario = new Usuario(id, null, null);
 			
 			var model = new Model();
 			view = new View(model, {

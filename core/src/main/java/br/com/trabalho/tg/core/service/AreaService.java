@@ -3,6 +3,7 @@ package br.com.trabalho.tg.core.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,8 @@ public class  AreaService {
 		return dao.findWithOutLocationByIdLocal(idLocal);
 	}
 	
-	public void getIntesection(long local, String latitude, String longitude) {
-		daoIntersection.findIntersectionByLocal(local, latitude, longitude);
+	public JSONArray getIntesection(long local, String latitude, String longitude) {
+		return daoIntersection.findIntersectionByLocal(local, latitude, longitude);
 	}
 	
 	public SDLArea getLocationByCodigoAndIdLocal(String codigo, long local) {

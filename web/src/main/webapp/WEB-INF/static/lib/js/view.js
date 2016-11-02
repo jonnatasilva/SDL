@@ -167,7 +167,7 @@ function View(model, elements, usuario, local) {
 
 View.prototype = {
 	show : function () {
-		this._elements.usuario.html(this._usuario.getNome());
+//		this._elements.usuario.html(this._usuario.getNome());
 		this.buildMapa();
 	},
 	buildMapa : function() {

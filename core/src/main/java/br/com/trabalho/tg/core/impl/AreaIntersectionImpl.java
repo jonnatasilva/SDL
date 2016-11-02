@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @Repository("sdlAreaDBImpl")
-public class AreaDBImpl implements AreaIntersectionDAO {
+public class AreaIntersectionImpl implements AreaIntersectionDAO {
 
 	@Autowired
 	private AreaDAO areaDAO;
@@ -35,7 +35,7 @@ public class AreaDBImpl implements AreaIntersectionDAO {
 		return null;
 	}
 
-	public JSONArray findIntersects(String point, List<SDLArea> areas) throws Exception {
+	private JSONArray findIntersects(String point, List<SDLArea> areas) throws Exception {
 		Geometry geoPoint =  new WKTReader().read("POINT(" + point + ")");
 
 		JSONArray array = new JSONArray();

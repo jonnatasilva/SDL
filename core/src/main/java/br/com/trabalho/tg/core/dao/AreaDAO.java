@@ -15,10 +15,10 @@ public interface AreaDAO extends JpaRepository<SDLArea, Long>{
 	
 	SDLArea findByCodigoAndIdLocal(String codigo, long local);
 	
+	List<SDLArea> findByidLocal(Long idLocal);
+
 	@Query("select t.locale from #{#entityName} t where t.codigo = ?1 and t.idLocal = ?2")
 	byte[] findLocaleByCodigoAndIdLocal(String codigo, long local);
-	
-	List<SDLArea> findByidLocal(Long idLocal);
 	
 	@Query("select t.codigo, t.descricao from #{#entityName} t where t.idLocal = ?1")
 	List<Object[]> findCodigoAndDescricaoByLocal(Long local);

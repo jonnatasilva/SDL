@@ -20,17 +20,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.trabalho.tg.core.impl.AreaDBImpl;
-import br.com.trabalho.tg.core.mock.UsuarioMock;
 import br.com.trabalho.tg.core.model.AreaLocal;
 import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
+import br.com.trabalho.tg.core.model.Usuario;
 import br.com.trabalho.tg.core.service.AreaService;
 import br.com.trabalho.tg.core.service.HistoricoAreaService;
 import br.com.trabalho.tg.core.utils.GeometryUtils;
 import br.com.trabalho.tg.core.utils.KmlUtils;
-import br.com.trabalho.tg.web.enums.MapeamentoEnum;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 @Controller("sdlAreaController")
@@ -44,13 +42,6 @@ public class AreaController {
 	@Autowired
 	HistoricoAreaService historicoService;
 	
-	@Autowired
-	AreaDBImpl impl;
-
-	private String prefixoPadrao = "redirect:/static";
-	
-	private List<AreaLocal> areas = new ArrayList<AreaLocal>();
-
 	/*
 	 * Metódo irá retornar a página default para a manipulação das
 	 * @param local, id do local de trabalho
@@ -61,7 +52,7 @@ public class AreaController {
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	private ModelAndView iniciar(@RequestParam("local") long idLocal, @RequestParam("areas") JSONArray ars, 
-			@RequestParam("usuario") long idUsuario, @RequestParam("latInicial") long lat, @RequestParam("longInicial") long inicial) {
+			@RequestParam("usuario") long idUsuario, @RequestParam("latInicial") long lat, @RequestParam("longInicial") long lon) {
 		ModelAndView model = new ModelAndView("/index");
 		try {
 			List<AreaLocal> areas = new ArrayList<AreaLocal>();
@@ -69,10 +60,9 @@ public class AreaController {
 				AreaLocal areaLocal = new AreaLocal(ars.getJSONObject(i).get("codigo").toString(), ars.getJSONObject(i).getString("descricao"));
 				areas.add(areaLocal);
 			}
-			Local local = new Local(idLocal, "1", "Local Teste", "America/São", areas, 
-					service.getAreasLocalByLocal(idLocal));
+			Local local = new Local(idLocal, areas, service.getAreasLocalByLocal(idLocal));
 			model.addObject("local", local);
-			model.addObject("usuario", new UsuarioMock(idUsuario, "1","Jonnatas"));
+			model.addObject("usuario", new Usuario(idUsuario));
 		}catch (Exception e) {
 			log.error(e);
 		}
@@ -100,7 +90,7 @@ public class AreaController {
 				System.out.println(arrayString.getBytes().length);
 				area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
 				area = service.saveArea(area);
-				historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area.getId()));
+				historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area));
 			}			
 		}catch (Exception e) {
 			log.error("Falha ao salvar Area: " + e);
@@ -111,7 +101,7 @@ public class AreaController {
 
 	@RequestMapping(value = "/list/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	private @ResponseBody List<SDLArea> listAreas(@RequestParam("idLocal") long idLocal) {
+	private @ResponseBody List<SDLArea> listAreasJSON(@RequestParam("idLocal") long idLocal) {
 		List<SDLArea> areas = new ArrayList<SDLArea>();
 		try{
 			List<Object[]> areasAux = new ArrayList<Object[]>();
@@ -136,7 +126,7 @@ public class AreaController {
 	
 	@RequestMapping(value = "/get/polygon/json", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseStatus(HttpStatus.OK)
-	private @ResponseBody SDLArea listAreas(@RequestParam("idLocal") long idLocal, 
+	private @ResponseBody SDLArea getArea(@RequestParam("idLocal") long idLocal, 
 			@RequestParam("codigo") String codigoArea) throws Exception {
 		return service.getLocationByCodigoAndIdLocal(codigoArea, idLocal);
 	}
@@ -158,19 +148,14 @@ public class AreaController {
 	}
 	
 	@RequestMapping(value = "/intersection", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	public @ResponseBody JSONArray intersection(@RequestParam("lat") String latitude, @RequestParam("long") String longitude,
+	public @ResponseBody JSONArray getIntersection(@RequestParam("lat") String latitude, @RequestParam("long") String longitude,
 			@RequestParam("local") long local) {
 		try {
-			return impl.findIntersectionByLocal(local, latitude, longitude);
+			return service.getIntesection(local, latitude, longitude);
 		} catch (Exception e) {
 			log.error("Falha ao buscar verificar intersecção: " + e);
 		}
 		return null;
-	}
-
-	@SuppressWarnings("unused")
-	private String getUrlView(MapeamentoEnum cView) {
-		return prefixoPadrao.concat(cView.getString());
 	}
 	
 	@ExceptionHandler(Exception.class)
