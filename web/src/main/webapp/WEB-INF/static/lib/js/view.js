@@ -48,10 +48,11 @@ AreaLocal.prototype = {
 		}
 }
 
-function Usuario(id, codigo, nome) {
+function Usuario(id, codigo, nome, isAdm) {
 	this._id = id;
 	this._codigo = codigo;
 	this._nome = nome;
+	this._isAdm = isAdm;
 }
 
 Usuario.prototype = {
@@ -63,6 +64,9 @@ Usuario.prototype = {
 		},
 		getNome: function() {
 			return this._nome;
+		},
+		isAdm: function() {
+			return this._isAdm;
 		}
 }
 
@@ -154,6 +158,11 @@ function View(model, elements, usuario, local) {
 			_this._elements.modalAutomatic['import'].jfilestyle('clear');
 			$('.count-jfilestyle').remove();
 		});
+	});
+	
+	this._elements.modalLogOperacoes['this'].on('show.bs.modal', function(event) {
+		var button = $(event.relatedTarget);
+		alert();
 	});
 	this._mapa.openFormSave.attach(function (sender, args) {
 //		_this._mapa.removeInteractions();

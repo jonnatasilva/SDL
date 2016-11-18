@@ -25,9 +25,14 @@
 						<li class="btnAutomatic" data-toggle="modal"
 							data-target="#btnModal" data-whatever="@mdo">Importar Area</li>
 					</ul>
-					<li><a href="#"> <i class="fa fa-dashboard fa-lg"></i>
-							Log de Operações
-					</a></li>
+					<c:if test="${usuario.isAdm}">
+						<li data-toggle="modal"
+							data-target="#modalLogOperacoes" 
+							data-whatever="@mdo"
+							class="optLogOperacoes">
+								Log de Operações 
+						</li>
+					</c:if>
 
 					<li><a href="#"> <i class="	fa fa-question"></i> Help
 					</a></li>

@@ -52,7 +52,8 @@ public class AreaController {
 	 */
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
 	private ModelAndView iniciar(@RequestParam("local") long idLocal, @RequestParam("areas") JSONArray ars, 
-			@RequestParam("usuario") long idUsuario, @RequestParam("latInicial") long lat, @RequestParam("longInicial") long lon) {
+			@RequestParam("usuario") long idUsuario, @RequestParam("latInicial") long lat, 
+			@RequestParam("longInicial") long lon, @RequestParam("isAdm") boolean isAdm) {
 		ModelAndView model = new ModelAndView("/index");
 		try {
 			List<AreaLocal> areas = new ArrayList<AreaLocal>();
@@ -62,7 +63,7 @@ public class AreaController {
 			}
 			Local local = new Local(idLocal, areas, service.getAreasLocalByLocal(idLocal));
 			model.addObject("local", local);
-			model.addObject("usuario", new Usuario(idUsuario));
+			model.addObject("usuario", new Usuario(idUsuario, isAdm));
 		}catch (Exception e) {
 			log.error(e);
 		}

@@ -1,11 +1,15 @@
 package br.com.trabalho.tg.core.model;
 
+import lombok.Data;
+
+@Data
 public class Usuario {
 	
 	private Long id;
-	
-	public Usuario(long id) {
+	private Boolean isAdm;
+	public Usuario(long id, boolean isAdm) {
 		this.id = id;
+		this.isAdm = isAdm;
 	}
 
 }
