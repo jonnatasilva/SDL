@@ -10,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,7 +44,7 @@ public class HistoricoArea {
 	@Column(name="id_usuario", nullable=false)
 	private Long idUsuario;
 	
-	@OneToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER, orphanRemoval = true)
+	@ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER, targetEntity=SDLArea.class)
     @JoinColumn(name="id_area", nullable=true)
 	private SDLArea area;
 }

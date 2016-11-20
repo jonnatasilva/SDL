@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.com.trabalho.tg.core.dao.AreaDAO;
 import br.com.trabalho.tg.core.dao.AreaIntersectionDAO;
 import br.com.trabalho.tg.core.model.AreaLocal;
+import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.SDLArea;
 
 @Service("sdlAreaService")
@@ -21,12 +22,17 @@ public class  AreaService {
 	@Autowired 
 	private AreaIntersectionDAO daoIntersection;
 	
+	@Autowired
+	HistoricoAreaService historicoService;
+	
 	public SDLArea getAreaByCodigoAndIdLocal(String codigo, long local) throws Exception {
 		return dao.findByCodigoAndIdLocal(codigo, local);
 	}
 	
-	public SDLArea saveArea(SDLArea entity) throws Exception {
-		return dao.save(entity);
+	public SDLArea saveArea(SDLArea entity, long usuario) throws Exception {
+		entity = dao.save(entity);
+//		historicoService.save(new HistoricoArea(entity.getLocale(), usuario, new SDLArea(entity.getId())));
+		return entity;
 	}
 	
 	public List<Object[]> getAreasByLocal(long idLocal) {

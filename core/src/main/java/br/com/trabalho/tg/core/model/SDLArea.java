@@ -67,5 +67,13 @@ public class SDLArea implements Comparable<SDLArea>{
 		}
 		return 1;
 	}
+	
+	public SDLArea() {
+		
+	}
+
+	public SDLArea(Long id) {
+		this.id = id;
+	}
 
 }	

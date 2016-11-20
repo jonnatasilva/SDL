@@ -21,12 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.trabalho.tg.core.model.AreaLocal;
-import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
 import br.com.trabalho.tg.core.model.Usuario;
 import br.com.trabalho.tg.core.service.AreaService;
-import br.com.trabalho.tg.core.service.HistoricoAreaService;
 import br.com.trabalho.tg.core.utils.GeometryUtils;
 import br.com.trabalho.tg.core.utils.KmlUtils;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
@@ -38,9 +36,6 @@ public class AreaController {
 
 	@Autowired
 	AreaService service;
-	
-	@Autowired
-	HistoricoAreaService historicoService;
 	
 	/*
 	 * Metódo irá retornar a página default para a manipulação das
@@ -88,10 +83,8 @@ public class AreaController {
 				area.setDescricao(json.getString("descricao"));
 				String arrayString = json.getString("locale");
 				area.setLocale(arrayString.getBytes());
-				System.out.println(arrayString.getBytes().length);
 				area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
-				area = service.saveArea(area);
-				historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), area));
+				area = service.saveArea(area, json.getLong("usuario"));
 			}			
 		}catch (Exception e) {
 			log.error("Falha ao salvar Area: " + e);

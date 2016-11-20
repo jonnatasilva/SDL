@@ -281,8 +281,8 @@ View.prototype = {
 			this._elements.modalAutomatic.formModal.find('.formGeometry').empty();
 			for (var i = 0; i < array.length; i++) {
 				this._elements.modalAutomatic.formModal.find('.formGeometry').append(this.getVertice(i, {
-					'latitude' : array[i][0],
-					'longitude' : array[i][1]
+					'latitude' : array[i][1],
+					'longitude' : array[i][0]
 				}));
 			}
 		}
