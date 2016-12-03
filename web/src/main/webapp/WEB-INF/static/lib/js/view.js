@@ -115,6 +115,11 @@ function View(model, elements, usuario, local) {
 		_this._mapa.addSelectSingleClickInteraction();
 	});
 	
+	this._elements.removeFeature.click(function() {
+		var featureId = _this._elements.removeFeature.attr('data-featureId');
+		_this._mapa.removeFeature(_this._mapa.getSelectedFeature());
+	});
+	
 	this._elements.modalAutomatic['this'].on('show.bs.modal', function(event) {
 		var button = $(event.relatedTarget)
 		var modal = _this._elements.modalAutomatic;
@@ -171,6 +176,10 @@ function View(model, elements, usuario, local) {
 	this._elements.buscarArea.change(function(event){
 		_this._mapa.buscarArea($(this).val());
 	});
+	this._mapa.enableRemoveFeature.attach(function (sender, args) {
+		_this._elements.removeFeatureId.css('display', 'inline-block');
+	});
+	
 
 }
 

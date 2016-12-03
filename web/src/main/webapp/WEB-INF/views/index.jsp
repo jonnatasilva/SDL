@@ -48,6 +48,9 @@
 		<button>
 			<span class="glyphicon glyphicon-hand-up btnVisuDetal" aria-hidden="true"></span>
 		</button>
+		<button id="btnRemoveFeatureId" style="display: none">
+			<span class="glyphicon glyphicon-remove btnRemoveFeature"></span>
+		</button>
 	</div>
 	
 
@@ -77,6 +80,8 @@
 			view = new View(model, {
 				'modificar': $('.btnModify'),
 				'paintManual' : $('.btnPintar'),
+				'removeFeatureId' : $('#btnRemoveFeatureId'),
+				'removeFeature': $('.btnRemoveFeature'),
 				'painelPrerando' : $('#preparando'),
 				'usuario' : $('#usuario'),
 				'buscarArea' : $('#buscaArea'),

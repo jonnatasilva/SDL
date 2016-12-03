@@ -9,6 +9,7 @@ function Mapa() {
 	var _this = this;
 
 	this.openFormSave = new Event(this);
+	this.enableRemoveFeature = new Event(this);
 
 }
 
@@ -94,6 +95,9 @@ Mapa.prototype = {
 				})
 			}),
 			filter : function(feature, layer) {
+				_this.enableRemoveFeature.notify({
+					
+				})
 				return true;
 			}
 		});
@@ -225,14 +229,28 @@ Mapa.prototype = {
 		this.source.forEachFeature(function(feature) {
 			if(feature.get('id') === undefined || feature.get('id') === '' || feature.get('id') === 0) {
 				_this.removeFeature(feature);
-				$.toaster({ priority : 'warning', title : 'Notificação', message : 'Area removida!'});
+				$.toaster({ priority : 'warning', title : 'NotificaÃ§Ã£o', message : 'Area removida!'});
 			}
 		});
 	},
 	removeFeature : function(feature) {
-		this.source.removeFeature(feature);	
+		if(feature != null && feature != undefined) {
+			this.source.removeFeature(feature);
+		}
+		this.source.refresh();
+		this.map.render();
+		this.selectSingleClick.getFeatures().clear();
 	},
 	getFeatureById : function(id) {
-		return this.source.getFeatureById(id);
-	} 
+		featureAux = undefined;
+		this.source.forEachFeature(function(feature) {
+			if(id === feature.get('id')) 
+				featureAux = feature;
+				return;
+		});
+		return featureAux;
+	},
+	getSelectedFeature : function() {
+		return this.selectSingleClick.getFeatures().getArray()[0];
+	}
 }
