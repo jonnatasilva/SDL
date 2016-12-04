@@ -3,8 +3,6 @@ package br.com.trabalho.tg.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +19,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.trabalho.tg.core.model.AreaLocal;
+import br.com.trabalho.tg.core.model.HistoricoArea;
 import br.com.trabalho.tg.core.model.Local;
 import br.com.trabalho.tg.core.model.SDLArea;
 import br.com.trabalho.tg.core.model.Usuario;
 import br.com.trabalho.tg.core.service.AreaService;
+import br.com.trabalho.tg.core.service.HistoricoAreaService;
 import br.com.trabalho.tg.core.utils.GeometryUtils;
 import br.com.trabalho.tg.core.utils.KmlUtils;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
+import lombok.extern.log4j.Log4j;
 
 @Controller("sdlAreaController")
 @RequestMapping("/map/")
@@ -36,6 +37,9 @@ public class AreaController {
 
 	@Autowired
 	AreaService service;
+	
+	@Autowired
+	HistoricoAreaService historicoService;
 	
 	/*
 	 * Metódo irá retornar a página default para a manipulação das
@@ -85,6 +89,7 @@ public class AreaController {
 				area.setLocale(arrayString.getBytes());
 				area.setLocation(GeometryUtils.arrayToPolygon(area.getLocaleArray()));
 				area = service.saveArea(area, json.getLong("usuario"));
+				historicoService.save(new HistoricoArea(area.getLocale(), json.getLong("usuario"), new SDLArea(area.getId())));
 			}			
 		}catch (Exception e) {
 			log.error("Falha ao salvar Area: " + e);
@@ -147,10 +152,54 @@ public class AreaController {
 		try {
 			return service.getIntesection(local, latitude, longitude);
 		} catch (Exception e) {
-			log.error("Falha ao buscar verificar intersecção: " + e);
+			log.error("Falha ao buscar verificar intersecção", e);
 		}
 		return null;
 	}
+	
+	@RequestMapping(value = "/remover", method = {RequestMethod.DELETE, RequestMethod.GET})
+	@ResponseStatus(value=HttpStatus.OK)
+	public void removerArea(@RequestParam("codArea") String codArea, @RequestParam("idLocal") long idLocal) {
+		try {
+			SDLArea area = service.getAreaByCodigoAndIdLocal(codArea, idLocal);
+			historicoService.deleteFromArea(area.getId());
+			service.remove(area.getId());
+		}catch(Exception e) {
+			log.error(e.getLocalizedMessage(), e);
+		}
+	}
+	
+	public JSONObject getGeoJsonObject(List<SDLArea> areas) {
+		try {
+			JSONArray features = null;
+			if(areas != null && areas.size() > 0) {
+				features = new JSONArray();
+				for(SDLArea obj : areas) {
+					JSONObject feature = new JSONObject();
+					feature.put("type", "Feature");
+					feature.put("properties", getPropertiesAreaJSON(obj.getCodigo(), obj.getDescricao()));
+					feature.put("geometry", getGeometryAreaJSON(obj.getLocaleArray()));
+					features.put(feature);
+				}
+			}
+			JSONObject geojsonObject = new JSONObject();
+			geojsonObject.put("type", "FeatureCollection");
+			geojsonObject.put("crs", new JSONObject("{'type': 'name'}"));
+			geojsonObject.put("features", features);
+			return geojsonObject;
+		}catch(Exception e) {
+			log.error(e.getLocalizedMessage(), e);
+		}
+		return null;
+	}
+	
+	public JSONObject getPropertiesAreaJSON(String codigo, String descricao) {
+		return new JSONObject("{'id': "+codigo+", 'name': "+descricao+"}");
+	}
+	public JSONObject getGeometryAreaJSON(JSONArray locale) {
+		return new JSONObject("{'type': 'Polygon', 'coordinates': [" + locale.toString() + "]}");
+	}
+
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> excpetionHandler() {

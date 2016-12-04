@@ -4,12 +4,12 @@ function Mapa() {
 	var source;
 	var selectSingleClick;
 	var modify;
-	var popup;
 	var vector;
 	var _this = this;
 
 	this.openFormSave = new Event(this);
 	this.enableRemoveFeature = new Event(this);
+	this.disableRemoveFeature = new Event(this);
 
 }
 
@@ -36,7 +36,6 @@ Mapa.prototype = {
 	removeInteractions : function() {
 		this.map.removeInteraction(this.draw);
 		this.map.removeInteraction(this.modify);
-		this.popup.hide();
 	},
 	addDrawInteraction : function() {
 		this.removeInteractions();
@@ -84,7 +83,11 @@ Mapa.prototype = {
 		// Adicionar evento que irá executar, quando
 		// terminar de desenha polygon
 		this.source.on('addfeature', function(evt) {
-			_this.notifyAddFeature(evt.feature);
+			if(_this.isPolygon(evt.feature.getGeometry().getCoordinates())) {
+				_this.notifyAddFeature(evt.feature);
+			} else {
+				_this.removeFeaturesWithOutId();
+			}
 		});
 
 		this.selectSingleClick = new ol.interaction.Select({
@@ -95,15 +98,14 @@ Mapa.prototype = {
 				})
 			}),
 			filter : function(feature, layer) {
-				_this.enableRemoveFeature.notify({
-					
-				})
+				_this.enableRemoveFeature.notify({})
 				return true;
 			}
 		});
 		
 		this.vector = new ol.layer.Vector({
 			source : _this.source,
+			style: _this.createPolygonStyleFunction()
 		});
 
 		var select = new ol.interaction.Select({
@@ -139,16 +141,18 @@ Mapa.prototype = {
 			type : /** @type {ol.geom.GeometryType} */
 			(value)
 		});
-		
-		this.popup = new ol.Overlay.Popup();
-		this.popup.setOffset([ 0, -55 ]);
-
-		this.map.addOverlay(this.popup);
 
 		this.map.addInteraction(this.selectSingleClick);
 		this.selectSingleClick.on('select', function(e) {
-			_this.buildPopup(e.selected.length, e.deselected.length, e.selected[0]);
+			if(e.selected != undefined && e.selected != null && e.selected.length > 0) {
+				e.selected[0].setStyle(_this.styleSelected(e.selected[0], 16));
+			} else {
+				_this.disableRemoveFeature.notify({});
+			} 
 			
+			if(e.deselected != undefined && e.deselected != null && e.deselected.length > 0){
+				e.deselected[0].setStyle(_this.styleDeselected(e.deselected[0], 12));
+			}
 		});
 		
 		_this.map.on('click', function(evt) {
@@ -203,26 +207,12 @@ Mapa.prototype = {
 			feature : feature
 		});
 	},
-	buildPopup : function(lenSele, lenDese, selected) {
-		if (lenSele == 1) {
-			var infoArea = selected.get('name');
-			var content = '<div class="divPopup"><p>' + infoArea
-					+ '</p></div>';
-			this.popup.show(selected.getGeometry().getExtent(), content);
-			coords = selected.getGeometry().getCoordinates();
-			this.openFormSave.notify({
-				coords : coords,
-				feature : selected
-			});
-		} else if (lenDese == 1) {
-			this.popup.hide();
-		}
-	},
 	setSource : function(source) {
 		this.source = source;
 	}, 
 	createVector : function(geoJSON) {
-		return  new ol.source.Vector({features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
+		return  new ol.source.Vector({format: new ol.format.GeoJSON(),
+			features : (new ol.format.GeoJSON()).readFeatures(this.carregaGeoJsonObject(geoJSON)), wrapX : false});
 	},
 	removeFeaturesWithOutId : function() {
 		_this = this;
@@ -252,5 +242,98 @@ Mapa.prototype = {
 	},
 	getSelectedFeature : function() {
 		return this.selectSingleClick.getFeatures().getArray()[0];
+	},
+	isPolygon: function(coordinates) {
+		polygon = new ol.geom.Polygon(coordinates);
+		console.log(polygon.getArea());
+		if(polygon != null && polygon.getCoordinates() != null && polygon.getCoordinates()[0].length > 3
+				&& polygon.getFirstCoordinate()[0] === polygon.getLastCoordinate()[0] 
+				&& polygon.getFirstCoordinate()[1] === polygon.getLastCoordinate()[1]
+				&& polygon.getArea() > 0) {
+			return true;
+		}
+		return false;
+	},
+	getText: function(feature) {
+	    var text = feature.get('name');
+	    return text;
+	},
+	createTextStyle: function(feature, fontSize, color) {
+		_this = this;
+		return new ol.style.Text({
+			textAlign: 'center',
+		    textBaseline: 'middle',
+		    font: fontSize+'px Verdana',
+		    text: _this.getText(feature),
+		    fill: new ol.style.Fill({color: color}),
+		    stroke: new ol.style.Stroke({color: '#000000', width: 0.7})
+		});
+	},
+	createPolygonStyleFunction: function() {
+		_this = this;
+		return function(feature) {
+			styles = [
+			          new ol.style.Style({
+			        	  stroke: new ol.style.Stroke({
+			        		  color: 'blue',
+			        		  width: 3
+			        	  }),
+			        	  fill: new ol.style.Fill({
+			        		  color: 'rgba(0, 0, 255, 0.1)'
+						  }),
+						  text: _this.createTextStyle(feature, 12, '#1C1C1C')
+			          }),
+			          new ol.style.Style({
+						  image: new ol.style.Circle({
+							  radius: 5,
+						      fill: new ol.style.Fill({
+						          color: 'orange'
+						       })
+					  }),
+					  geometry: function(feature) {
+						  var coordinates = feature.getGeometry().getCoordinates()[0];
+						  return new ol.geom.MultiPoint(coordinates);
+					   }
+			         })]
+			return styles;
+		}
+	},
+	styleSelected: function(feature, fontSize) {
+		return new ol.style.Style({
+      	  stroke: new ol.style.Stroke({
+      		  color: '#008B8B',
+      		  width: 1
+      	  }),
+      	  fill: new ol.style.Fill({
+      		  color: 'rgba(0, 0, 255, 0.1)'
+			  }),
+			  text: _this.createTextStyle(feature, fontSize, '#FF0000')
+        })
+	},
+	styleDeselected: function(feature) {
+		styles = [
+		          new ol.style.Style({
+		        	  stroke: new ol.style.Stroke({
+		        		  color: 'blue',
+		        		  width: 3
+		        	  }),
+		        	  fill: new ol.style.Fill({
+		        		  color: 'rgba(0, 0, 255, 0.1)'
+					  }),
+					  text: _this.createTextStyle(feature, 12, '#1C1C1C')
+		          }),
+		          new ol.style.Style({
+					  image: new ol.style.Circle({
+						  radius: 5,
+					      fill: new ol.style.Fill({
+					          color: 'orange'
+					       })
+				  }),
+				  geometry: function(feature) {
+					  var coordinates = feature.getGeometry().getCoordinates()[0];
+					  return new ol.geom.MultiPoint(coordinates);
+				   }
+		         })]
+		return styles;
 	}
 }

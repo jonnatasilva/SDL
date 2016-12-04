@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +21,10 @@ import lombok.Data;
 @Entity
 @Table(name="sdl_historico_area")
 public class HistoricoArea {
+	
+	public HistoricoArea() {
+		
+	}
 	
 	public HistoricoArea(byte[] locale, Long idUsuario, SDLArea area) {
 		this.dataAlteracao = new Date();
@@ -44,7 +48,6 @@ public class HistoricoArea {
 	@Column(name="id_usuario", nullable=false)
 	private Long idUsuario;
 	
-	@ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.EAGER, targetEntity=SDLArea.class)
-    @JoinColumn(name="id_area", nullable=true)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
 	private SDLArea area;
 }

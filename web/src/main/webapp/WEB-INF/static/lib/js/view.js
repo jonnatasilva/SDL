@@ -116,7 +116,7 @@ function View(model, elements, usuario, local) {
 	});
 	
 	this._elements.removeFeature.click(function() {
-		var featureId = _this._elements.removeFeature.attr('data-featureId');
+		_this._model.removerFeature(_this._mapa.getSelectedFeature().get('id'), _this._local.getId());
 		_this._mapa.removeFeature(_this._mapa.getSelectedFeature());
 	});
 	
@@ -178,6 +178,9 @@ function View(model, elements, usuario, local) {
 	});
 	this._mapa.enableRemoveFeature.attach(function (sender, args) {
 		_this._elements.removeFeatureId.css('display', 'inline-block');
+	});
+	this._mapa.disableRemoveFeature.attach(function (sender, args) {
+		_this._elements.removeFeatureId.css('display', 'none');
 	});
 	
 
@@ -340,6 +343,7 @@ View.prototype = {
 				if (!erroEnc && values.hasOwnProperty('codigo')) {
 					feature.set('id', values['codigo']);
 					feature.set('name', values['codigo'] + ' - ' + values['descricao']);
+					feature.setStyle(_this._mapa.styleDeselected(feature, 12));
 					_this.salvar.notify({ index : event.target.selectedIndex, area: values});
 				} else {
 					containErro['this'].show();

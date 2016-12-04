@@ -94,5 +94,15 @@ Model.prototype = {
 			}
 		}
 		return retorno;
+	},
+	removerFeature: function(id, local) {
+		$.ajax({
+		    url: this.base + 'remover',
+		    data: {'codArea': id, 'idLocal': local},
+		    type: 'GET',
+		    success: function(result) {
+		        // Do something with the result
+		    }
+		});
 	}
 }

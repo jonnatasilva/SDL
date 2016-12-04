@@ -21,5 +21,9 @@ public class HistoricoAreaService {
 	public void save(HistoricoArea historicoArea) {
 		dao.save(historicoArea);
 	}
+	
+	public void deleteFromArea(long idArea) {
+		dao.deleteFromArea(idArea);
+	}
 
 }
